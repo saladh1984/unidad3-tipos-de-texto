@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misión Textos</title>
+<style>
+:root{
+  --bg:#fbf7ef; --card:#ffffff; --ink:#2d2a32; --muted:#6b6570; --line:#e8e3ee;
+  --primary:#6c5ce7; --primary-d:#5243c4; --primary-l:#efebff;
+  --rep:#e67a2e; --rep-l:#fde9d7;
+  --art:#2f7fc4; --art-l:#dcebf8;
+  --man:#2a9a5d; --man-l:#daf2e4;
+  --cmp:#8a55d2; --cmp-l:#ece2fa;
+  --esc:#cf4a84; --esc-l:#fbe0ec;
+  --fin:#c9960e; --fin-l:#fbf0cf;
+  --sum:#4d8f8a; --sum-l:#dcefed;
+  --ok:#23915a; --ok-l:#dff5e8; --bad:#d04545; --bad-l:#fde3e3;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{font-size:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",Verdana,Arial,sans-serif;line-height:1.5}
+header.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:12px;padding:8px 16px;flex-wrap:wrap}
+.brand{font-weight:bold;font-size:1.05rem;background:none;color:var(--ink);padding:8px 10px;min-height:44px}
+.stats{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--primary-l);border-radius:999px;padding:6px 14px;font-weight:bold;font-size:.95rem}
+main{max-width:1000px;margin:0 auto;padding:18px 16px 70px}
+.screen{display:none}
+.screen.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+button{font:inherit;cursor:pointer;border:none;border-radius:14px;padding:12px 22px;font-size:1rem;font-weight:bold;min-height:52px;transition:transform .08s}
+button:active{transform:scale(.97)}
+button:disabled{cursor:default}
+.btn{background:var(--primary);color:#fff;box-shadow:0 4px 0 var(--primary-d)}
+.btn:disabled{opacity:.45}
+.btn.secondary{background:#fff;color:var(--ink);border:2px solid #d9d4e2;box-shadow:0 3px 0 #d9d4e2}
+.btn.green{background:var(--ok);box-shadow:0 4px 0 #17703f}
+.linkbtn{background:none;color:var(--muted);text-decoration:underline;font-weight:normal;min-height:44px}
+.card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:0 3px 12px rgba(60,40,90,.07);margin-bottom:20px}
+h1{font-size:1.8rem;margin:.1em 0;line-height:1.2}
+h2{font-size:1.4rem;margin:.2em 0 .5em;line-height:1.25}
+h3{font-size:1.15rem;margin:.7em 0 .3em}
+p{margin:.4em 0 .7em}
+.big{font-size:1.1rem}
+.small{font-size:.9rem}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.row.center{justify-content:center}
+.mt{margin-top:16px}
+
+/* Inicio */
+.hero{text-align:center;background:linear-gradient(135deg,#fff 0%,#f4efff 100%)}
+.hero-emoji{font-size:2.4rem;letter-spacing:6px}
+.countdown{display:inline-block;background:var(--fin-l);border-radius:14px;padding:8px 16px;font-weight:bold}
+.progress{background:#eee9f3;border-radius:999px;height:26px;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#8e7cf0,#6c5ce7);border-radius:999px;transition:width .5s}
+.progress.thin{height:14px;margin:6px 0 14px}
+.medals{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.medal{width:130px;text-align:center;background:#faf8fd;border:2px dashed #ddd6e8;border-radius:16px;padding:10px 6px;font-size:.85rem}
+.medal .mi{font-size:2.2rem;display:block}
+.medal.off{opacity:.45;filter:grayscale(1)}
+.medal.on{border:2px solid var(--fin);background:var(--fin-l)}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:22px}
+.mcard{text-align:left;background:#fff;border-radius:var(--radius);padding:18px;box-shadow:0 3px 0 rgba(0,0,0,.08),0 3px 12px rgba(60,40,90,.06);border-top:10px solid var(--c);color:var(--ink);font-weight:normal;width:100%}
+.mcard .mic{font-size:2rem}
+.mcard .mt1{font-weight:bold;font-size:1.1rem;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chipst{font-size:.8rem;border-radius:999px;padding:3px 10px;background:#f1eef5}
+.chipst.ok{background:var(--ok-l);color:#17703f;font-weight:bold}
+.c-rep{--c:var(--rep);--cl:var(--rep-l)} .c-art{--c:var(--art);--cl:var(--art-l)} .c-man{--c:var(--man);--cl:var(--man-l)}
+.c-cmp{--c:var(--cmp);--cl:var(--cmp-l)} .c-esc{--c:var(--esc);--cl:var(--esc-l)} .c-fin{--c:var(--fin);--cl:var(--fin-l)} .c-sum{--c:var(--sum);--cl:var(--sum-l)}
+.plan li{margin:6px 0;list-style:none;padding:8px 12px;border-radius:12px;background:#f8f6fb}
+.plan ul{padding:0}
+.plan li.ok{background:var(--ok-l)}
+
+/* Misión */
+.mhead{display:flex;gap:16px;align-items:center;background:var(--cl);border-left:12px solid var(--c);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px}
+.mhead .micon{font-size:2.6rem}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{background:#fff;border:3px solid var(--line);color:var(--ink);flex:1 1 180px}
+.tab.on{border-color:var(--c);background:var(--cl)}
+.box{border-radius:14px;padding:14px 16px;margin:12px 0}
+.box.tip{background:#fff8dc;border-left:8px solid #e9b949}
+.box.info{background:var(--cl,#f1eef5);border-left:8px solid var(--c,#999)}
+.trick{background:linear-gradient(135deg,#fff4c9,#ffe3ef);border-radius:16px;padding:16px 18px;border:3px dashed #e9a3c0;font-size:1.1rem}
+.trick .big2{font-size:1.35rem;font-weight:bold}
+ul.feat{padding-left:0;list-style:none}
+ul.feat li{padding:8px 12px;margin:6px 0;background:#faf8fd;border-radius:12px}
+
+/* Texto de ejemplo con partes */
+.example{background:#fffdf8;border:2px solid var(--line);border-radius:16px;padding:14px 16px;position:relative}
+.part{border-left:10px solid;border-radius:12px;padding:10px 14px;margin:10px 0;cursor:pointer;transition:box-shadow .15s}
+.part:hover,.part.activep{box-shadow:0 0 0 3px #3a3340 inset}
+.plabel{display:inline-block;font-size:.78rem;font-weight:bold;background:#fff;border:2px solid;border-radius:999px;padding:1px 10px;margin-bottom:4px}
+.pc1{background:#fff3cf;border-color:#e3b23c}.pc1 .plabel{border-color:#e3b23c}
+.pc2{background:#ffe1ec;border-color:#e0709a}.pc2 .plabel{border-color:#e0709a}
+.pc3{background:#e0f1ff;border-color:#4a9bd8}.pc3 .plabel{border-color:#4a9bd8}
+.pc4{background:#e3f6dc;border-color:#58ab47}.pc4 .plabel{border-color:#58ab47}
+.pc5{background:#efe5ff;border-color:#9468dc}.pc5 .plabel{border-color:#9468dc}
+.pc6{background:#ffe8d8;border-color:#e98845}.pc6 .plabel{border-color:#e98845}
+.pc7{background:#e0f5f3;border-color:#3fa39a}.pc7 .plabel{border-color:#3fa39a}
+.explain{position:sticky;bottom:10px;background:#3a3340;color:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:5}
+.subt{font-weight:bold;display:block;margin-top:6px}
+.fakeimg{display:block;background:#fff;border:2px dashed #bbb;border-radius:10px;padding:10px;text-align:center;font-size:.9rem;color:#555}
+.vt{border-collapse:collapse;margin:8px 0}
+.vt td,.vt th{border:2px solid var(--line);padding:6px 14px}
+.vt th{background:#f5f2f9}
+
+/* Preguntas */
+.qhead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-weight:bold}
+.qcard{background:#fff;border-radius:var(--radius);padding:22px;box-shadow:0 3px 12px rgba(60,40,90,.08)}
+.qtag{display:inline-block;background:var(--primary-l);color:var(--primary-d);border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:bold;margin-bottom:10px}
+.qtext{font-size:1.1rem;font-weight:bold;margin-bottom:14px}
+.passage{background:#fffdf3;border:2px solid #efe3b8;border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:1rem}
+.passage p{margin:.3em 0}
+.fragment{background:#f6f3fb;border-left:8px solid var(--cmp);border-radius:12px;padding:12px 16px;margin-bottom:10px;font-weight:normal;font-style:italic}
+.statement{background:#f6f3fb;border-radius:12px;padding:14px 16px;font-size:1.1rem}
+.opts{display:grid;gap:10px}
+.opt{background:#fff;color:var(--ink);border:3px solid #e2dcea;text-align:left;font-weight:normal;box-shadow:0 3px 0 #e2dcea}
+.opt:hover:not(:disabled){border-color:#b7aaf0}
+.opt.sel{border-color:var(--primary);background:var(--primary-l)}
+.opt.right{border-color:var(--ok);background:var(--ok-l);font-weight:bold}
+.opt.wrong{border-color:var(--bad);background:var(--bad-l);opacity:.8}
+.opt:disabled:not(.right):not(.wrong):not(.sel){opacity:.6}
+.opts.three{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.opts.three .opt{text-align:center;font-weight:bold}
+.feedback{display:none;border-radius:14px;padding:12px 16px;margin-top:14px}
+.feedback.good{display:block;background:var(--ok-l);border-left:8px solid var(--ok)}
+.feedback.bad{display:block;background:var(--bad-l);border-left:8px solid var(--bad)}
+.feedback .fbt{font-weight:bold;font-size:1.1rem}
+.fix{margin-top:6px;background:#fff;border-radius:10px;padding:8px 12px}
+.qactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.order-list{display:grid;gap:8px}
+.order-item{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid #e2dcea;border-radius:14px;padding:8px 10px;cursor:grab}
+.order-item.dragging{opacity:.4}
+.order-item.right{border-color:var(--ok);background:var(--ok-l)}
+.order-item.wrong{border-color:var(--bad);background:var(--bad-l)}
+.onum{background:var(--primary);color:#fff;border-radius:50%;min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.otxt{flex:1}
+.oarrows{display:flex;gap:4px}
+.arrow{min-height:46px;min-width:50px;padding:4px 8px;background:#f1eef5;font-size:1.1rem}
+.arrow:disabled{opacity:.3}
+.bank{display:flex;flex-wrap:wrap;gap:10px;min-height:60px;background:#f6f3fb;border-radius:14px;padding:10px;margin:8px 0 14px}
+.chip{background:var(--primary);color:#fff;border-radius:999px;padding:10px 18px;font-weight:bold;cursor:grab;user-select:none;box-shadow:0 3px 0 var(--primary-d)}
+.chip.sel{background:#f2b705;color:#2d2a32;box-shadow:0 3px 0 #b88a00;outline:3px solid #2d2a32}
+.slot{display:flex;gap:12px;align-items:stretch;margin:10px 0;flex-wrap:wrap}
+.drop{flex:0 0 190px;min-height:56px;border:3px dashed #b9afd0;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:bold;color:#9a90b0;background:#fff;cursor:pointer;padding:6px}
+.drop.ready{border-color:#f2b705;background:#fff9e3}
+.drop.over{border-color:var(--primary);background:var(--primary-l)}
+.drop.filled{border-style:solid;color:var(--ink);background:var(--primary-l)}
+.drop.right{border-color:var(--ok);background:var(--ok-l)}
+.frag{flex:1 1 300px;background:#fffdf3;border:2px solid #efe3b8;border-radius:12px;padding:8px 12px;font-size:.95rem}
+
+/* Tablas */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cmp{border-collapse:separate;border-spacing:0;width:100%;min-width:720px;font-size:.92rem}
+table.cmp th,table.cmp td{padding:10px 12px;border-bottom:2px solid var(--line);vertical-align:top;text-align:left}
+table.cmp thead th{color:#fff;font-size:1rem}
+table.cmp thead th:nth-child(2){background:var(--rep)} table.cmp thead th:nth-child(3){background:var(--art)} table.cmp thead th:nth-child(4){background:var(--man)}
+table.cmp thead th:first-child{background:#fff}
+table.cmp tbody th{background:#f6f3fb;width:130px}
+table.cmp td:nth-child(2){background:#fff8f2} table.cmp td:nth-child(3){background:#f4f9fe} table.cmp td:nth-child(4){background:#f3fbf6}
+
+/* Escribe */
+textarea{width:100%;font:inherit;font-size:1rem;border:3px solid #ddd6e8;border-radius:14px;padding:10px 12px;resize:vertical;background:#fffffd}
+textarea:focus{outline:none;border-color:var(--primary)}
+label.fl{font-weight:bold;display:block;margin:12px 0 4px}
+.check{display:flex;gap:12px;align-items:flex-start;padding:8px 10px;border-radius:12px;background:#faf8fd;margin:6px 0;cursor:pointer}
+.check input{width:28px;height:28px;flex:0 0 28px;margin-top:2px;accent-color:var(--ok)}
+.model{background:#f3fbf6;border:3px solid var(--ok);border-radius:14px;padding:14px 16px;white-space:pre-line}
+.warn{background:#fff3e0;border-left:8px solid #f0a030;border-radius:12px;padding:8px 12px;margin:6px 0}
+.goodnote{background:var(--ok-l);border-left:8px solid var(--ok);border-radius:12px;padding:8px 12px;margin:6px 0}
+
+/* Resultado prueba */
+.grade{font-size:3.4rem;font-weight:bold;line-height:1}
+.grade.pass{color:var(--ok)} .grade.fail{color:var(--bad)}
+.rev{border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0;background:#fff}
+.rev .revq{font-weight:bold}
+.timer{font-variant-numeric:tabular-nums;background:var(--fin-l);border-radius:12px;padding:4px 12px}
+
+/* Hoja resumen */
+.sheet{background:#fff;border-radius:var(--radius);padding:22px;box-shadow:0 3px 12px rgba(60,40,90,.08)}
+.sheet-head{text-align:center;border-bottom:3px dashed var(--line);margin-bottom:12px;padding-bottom:6px}
+.sheet-head h1{font-size:1.6rem}
+.sum-box{border:3px solid var(--c);border-radius:16px;padding:10px 14px;margin:12px 0;background:linear-gradient(180deg,var(--cl) 0 44px,#fff 44px)}
+.sum-box h2{font-size:1.2rem;margin:0 0 8px}
+.sum-grid{display:grid;grid-template-columns:1fr 1.1fr 1.3fr 1fr;gap:12px;font-size:.88rem}
+.sum-grid h4{margin:0 0 4px;font-size:.92rem}
+.sum-grid ol,.sum-grid ul{margin:0;padding-left:1.2em}
+.sum-grid p{margin:0}
+.sum-trick{background:#fff6d6;border-radius:10px;padding:6px 8px}
+@media (max-width:760px){.sum-grid{grid-template-columns:1fr 1fr}}
+.mhead>div{min-width:0}
+.mhead h1{overflow-wrap:break-word}
+@media (max-width:480px){html{font-size:18px}h1{font-size:1.5rem}.mhead .micon{font-size:2rem}.card,.qcard{padding:16px}.sum-grid{grid-template-columns:1fr}.drop{flex:1 1 100%}.map{grid-template-columns:1fr}}
+
+/* Toast y modal */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#3a3340;color:#fff;padding:12px 22px;border-radius:999px;font-weight:bold;z-index:50;transition:transform .3s;max-width:90vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#modal{position:fixed;inset:0;background:rgba(40,30,60,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+#modal.show{display:flex}
+#modal .mbox{background:#fff;border-radius:24px;padding:28px;max-width:460px;text-align:center;animation:pop .35s}
+#modal .bigm{font-size:5rem;line-height:1.1}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+
+@media print{
+  @page{size:A4;margin:9mm}
+  html{font-size:11px}
+  body{background:#fff}
+  header.topbar,#toast,#modal,.no-print{display:none !important}
+  main{padding:0;max-width:none}
+  .sheet{box-shadow:none;padding:0;border-radius:0}
+  .sheet-head h1{font-size:1.5rem}
+  .sum-box{margin:7px 0;padding:6px 10px;break-inside:avoid}
+  .sum-grid{grid-template-columns:1fr 1.1fr 1.3fr 1fr !important;font-size:.95rem;gap:8px}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px;font-size:22px">Este módulo necesita JavaScript activado para funcionar.</p></noscript>
+
+<header class="topbar">
+  <button class="brand" onclick="goHome()">🏠 Misión Textos</button>
+  <div class="stats">
+    <span class="pill" id="topPoints">⭐ 0 puntos</span>
+    <span class="pill" id="topMedals">🏅 0/6</span>
+  </div>
+</header>
+
+<main>
+  <section id="screen-home" class="screen active"><div id="home"></div></section>
+  <section id="screen-mission" class="screen"><div id="mission"></div></section>
+  <section id="screen-compare" class="screen"><div id="compare"></div></section>
+  <section id="screen-write" class="screen"><div id="write"></div></section>
+  <section id="screen-final" class="screen"><div id="final"></div></section>
+  <section id="screen-summary" class="screen"><div id="summary"></div></section>
+</main>
+
+<div id="toast"></div>
+<div id="modal"><div class="mbox" id="modalBox"></div></div>
+
+<script>
+"use strict";
+/* =========================================================
+   PROGRESO (localStorage)
+   ========================================================= */
+const STORE_KEY = "misionTextos_v1";
+const STEPS = ["m1a","m1b","m1c","m2a","m2b","m2c","m3a","m3b","m3c","m4","m5","final"];
+const MEDALS = {
+  m1:{icon:"🕵️",name:"Reportero Estrella"},
+  m2:{icon:"🔬",name:"Explicador Experto"},
+  m3:{icon:"🛠️",name:"Maestro de Instrucciones"},
+  m4:{icon:"🧭",name:"Detective de Textos"},
+  m5:{icon:"✍️",name:"Escritor Pro"},
+  final:{icon:"🏆",name:"Campeón de la Prueba"}
+};
+function defaultState(){ return {points:0, medals:{}, done:{}, learnPts:{}, writeDone:{}, drafts:{}, bestGrade:null, lastGrade:null, timerOn:true}; }
+function loadState(){
+  try{ const raw = localStorage.getItem(STORE_KEY); if(raw) return Object.assign(defaultState(), JSON.parse(raw)); }catch(e){}
+  return defaultState();
+}
+let S = loadState();
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} updateTop(); }
+function addPoints(n){ if(!n) return; S.points += n; save(); toast("+" + n + " ⭐"); }
+function markDone(step){ if(!S.done[step]){ S.done[step] = true; save(); } }
+function updateTop(){
+  document.getElementById("topPoints").textContent = "⭐ " + S.points + " puntos";
+  document.getElementById("topMedals").textContent = "🏅 " + Object.keys(MEDALS).filter(k=>S.medals[k]).length + "/6";
+}
+function resetProgress(){
+  if(!confirm("¿Seguro que quieres borrar TODO tu progreso (puntos, medallas y textos escritos)?")) return;
+  S = defaultState();
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  save(); goHome(); toast("Progreso reiniciado 🔄");
+}
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const $ = s => document.querySelector(s);
+function el(tag, cls, html){ const e = document.createElement(tag); if(cls) e.className = cls; if(html!=null) e.innerHTML = html; return e; }
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function strip(html){ const d = document.createElement("div"); d.innerHTML = html; return (d.textContent||"").trim(); }
+let toastT = null;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 1800); }
+function modal(html){ $("#modalBox").innerHTML = html + '<div class="mt"><button class="btn" onclick="closeModal()">¡Genial! 😄</button></div>'; $("#modal").classList.add("show"); }
+function closeModal(){ $("#modal").classList.remove("show"); }
+const CHEERS = ["¡Bacán! 🎉","¡Muy bien! 👏","¡Excelente! 🌟","¡Lo lograste! 💪","¡Crack! ⚽","¡Así se hace! 🚀"];
+function cheer(){ return CHEERS[Math.floor(Math.random()*CHEERS.length)]; }
+function giveMedal(key){
+  const m = MEDALS[key];
+  if(!S.medals[key]){
+    S.medals[key] = true; save(); addPoints(50);
+    modal('<div class="bigm">' + m.icon + '</div><h2>¡Ganaste una medalla!</h2><p class="big"><b>' + m.name + '</b></p><p>+50 puntos extra ⭐</p>');
+  } else {
+    modal('<div class="bigm">' + m.icon + '</div><h2>¡Otra vez lo lograste!</h2><p>Ya tenías la medalla <b>' + m.name + '</b>. ¡Sigue así!</p>');
+  }
+}
+function show(id){
+  stopTimer();
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function goHome(){ renderHome(); show("screen-home"); }
+
+/* =========================================================
+   CREADORES DE PREGUNTAS (la alternativa correcta se escribe
+   PRIMERO y luego se mezcla al mostrarla)
+   ========================================================= */
+function MC(q, opts, exp, hint, x){ return Object.assign({type:"mc", q, opts, a:0, exp, hint}, x||{}); }
+function TF(q, a, exp, hint, fix, x){ return Object.assign({type:"tf", q, a, exp, hint, fix}, x||{}); }
+function ORD(q, items, exp, hint, x){ return Object.assign({type:"order", q, items, exp, hint}, x||{}); }
+function DRG(q, parts, exp, hint, x){ return Object.assign({type:"drag", q, parts, exp, hint}, x||{}); }
+const TIPOS = ["📰 Reportaje","🔬 Artículo informativo","🛠️ Manual de instrucciones"];
+function WH(frag, letter, exp, x){
+  return Object.assign({type:"mc", kind:"which", q:'<div class="fragment">' + frag + '</div>¿Qué tipo de texto es?', opts:TIPOS, a:{R:0,A:1,M:2}[letter], noShuffle:true, exp, hint:""}, x||{});
+}
+const KIND = {mc:"🔘 Selección múltiple", tf:"✅❌ Verdadero o falso", drag:"🧲 Arrastra y suelta", order:"🔢 Ordena", detective:"🔎 Detective de errores", complete:"✏️ Completa", comp:"📖 Comprensión lectora", which:"🤔 ¿Qué texto es?"};
+
+/* =========================================================
+   TEXTOS PARA COMPRENSIÓN
+   ========================================================= */
+const P_FARO = `<p><b>El último guardián del faro</b></p>
+<p><i>Don Héctor lleva 30 años cuidando el faro de isla Pájaros. Viajamos hasta allá para conocer su vida.</i></p>
+<p>El viento sopla tan fuerte que cuesta abrir la puerta. Adentro, don Héctor prepara un té y sonríe: “Aquí nunca me siento solo. Tengo el mar, los lobos marinos y las estrellas”, dice.</p>
+<p>Según nos contaron en el puerto, cada vez hay menos faros con cuidadores, porque muchos ya funcionan de forma automática.</p>`;
+const P_TORTUGAS = `<p><b>Los niños que salvan tortugas</b></p>
+<p>Un grupo de estudiantes de Arica limpia la playa cada sábado para proteger a las tortugas verdes.</p>
+<p>La arena todavía está fría cuando llegan los primeros voluntarios, con guantes y bolsas en la mano.</p>
+<p>“Encontramos tapitas, bombillas y hasta un zapato”, cuenta Matías, de 12 años. En un solo mes han juntado más de 200 kilos de basura.</p>`;
+const P_TERREMOTOS = `<p><b>Los terremotos</b></p>
+<p>Chile es uno de los países con más terremotos del mundo. Pero ¿por qué ocurren?</p>
+<p><b>¿Qué es un terremoto?</b> Es un movimiento fuerte y repentino de la superficie de la Tierra. Se produce cuando grandes bloques de roca, llamados placas tectónicas, chocan o se deslizan entre sí.</p>
+<p><b>¿Por qué tiembla tanto en Chile?</b> Nuestro país está ubicado donde se encuentran dos placas: la de Nazca y la Sudamericana. La placa de Nazca se mete bajo la Sudamericana, y eso produce movimientos frecuentes.</p>
+<p>Conocer cómo se producen los terremotos ayuda a prepararse mejor y a construir edificios más seguros.</p>`;
+const P_TIBURON = `<p>Los tiburones ballena son los peces más grandes del mundo. Pueden medir más de 12 metros de largo. Se alimentan de plancton, que filtran con su enorme boca. En mi opinión, son los animales más bonitos del océano y todos deberían amarlos.</p>`;
+const P_TABLET = `<p><b>Cómo cargar tu tablet</b></p>
+<p>Componentes: tablet, cable USB y cargador.</p>
+<p>1. Conecta el cable USB al cargador.<br>2. Enchufa el cargador en la pared.<br>3. Conecta el otro extremo del cable a la tablet.<br>4. Espera a que el ícono de batería llegue al 100 %.</p>
+<p>⚠️ Precaución: no cargues la tablet cerca del agua y no la dejes sobre la cama o almohadas mientras se carga.</p>`;
+const P_LIMONADA = `<p><b>Cómo hacer una limonada</b></p>
+<p>Materiales: 3 limones, 1 litro de agua, azúcar, un cuchillo y una jarra.</p>
+<p>1. Corta los limones por la mitad.<br>2. Exprime el jugo en la jarra.<br>3. Agrega el agua y el azúcar.<br>4. Revuelve y sirve.</p>`;
+
+/* =========================================================
+   MISIONES 1, 2 y 3
+   ========================================================= */
+const MISSIONS = {
+/* ---------------- MISIÓN 1: REPORTAJE ---------------- */
+m1:{num:1, title:"El Reportaje", icon:"📰", color:"rep",
+purpose:`<p class="big">El reportaje es un texto <b>periodístico</b> que <b>investiga y profundiza</b> un tema de interés. 🕵️</p>
+<p>Es como una noticia, pero <b>más largo y detallado</b>. El periodista viaja, observa, <b>entrevista</b> a personas y busca <b>datos</b> para contarte todo sobre un tema real.</p>
+<p>📍 Lo encuentras en diarios, revistas, sitios web y programas de TV.</p>
+<div class="box tip"><b>🆚 Noticia vs. reportaje</b><br>📰 La <b>noticia</b> cuenta rápido qué pasó: <i>“La selección sub-12 ganó el campeonato”.</i><br>🔍 El <b>reportaje</b> investiga a fondo: <i>“Así entrenan los niños que sueñan con ser futbolistas”</i>, con entrevistas, datos y fotos.</div>`,
+example:[
+ {l:"Título", c:1, e:"<b>Título:</b> corto y llamativo. Te invita a leer.", h:`<span style="font-size:1.4rem;font-weight:bold">Atrapando nubes en el desierto</span>`},
+ {l:"Bajada (epígrafe)", c:2, e:"<b>Bajada o epígrafe:</b> va justo bajo el título y resume en 1 o 2 oraciones de qué trata el reportaje.", h:`<i>En una caleta del norte de Chile, un grupo de vecinos usa grandes mallas para sacarle agua a la niebla. Viajamos hasta allá para conocer cómo lo hacen.</i>`},
+ {l:"Fotografía y pie de foto", c:7, e:"<b>Fotografía con pie de foto:</b> muestra el lugar o a las personas. El pie de foto explica lo que se ve.", h:`<span class="fakeimg">📷 [Foto: grandes mallas negras en lo alto de un cerro, cubiertas de neblina]</span><span class="small"><i>Los atrapanieblas se instalan en lo alto de los cerros, donde la niebla es más espesa.</i></span>`},
+ {l:"Lead o entrada", c:3, e:"<b>Lead o entrada:</b> es el primer párrafo. Engancha al lector con una escena, un dato curioso o una pregunta. ¡Fíjate que aquí se nota el estilo del periodista!", h:`Son las seis de la mañana en caleta Punta Neblina y no se ve nada. Una nube gris y húmeda, que en el norte llaman <i>camanchaca</i>, cubre las casas. Para cualquiera sería un día feo. Para doña Rosa Tapia, es un regalo.`},
+ {l:"Cuerpo", c:4, e:"<b>Cuerpo:</b> es la parte más larga. Tiene <b>subtítulos</b>, <b>datos</b>, <b>citas textuales</b> (entre comillas) y <b>testimonios</b> de las personas entrevistadas.", h:`<span class="subt">Una malla que “bebe” niebla</span>Los atrapanieblas son mallas de plástico, de unos 4 metros de alto. Cuando la niebla choca con ellas, las gotitas se juntan, caen a una canaleta y llegan a un estanque. “Antes esperábamos el camión aljibe. Ahora regamos el huerto con agua de las nubes”, cuenta doña Rosa, mientras muestra sus tomates.
+<span class="subt">Los niños también ayudan</span>En la escuela de la caleta, los estudiantes revisan cada semana que las mallas no estén rotas. Según los vecinos, en un buen día de niebla una malla grande puede juntar cientos de litros de agua. “Es como magia, pero es ciencia”, dice Benjamín, de 11 años.`},
+ {l:"Cierre o conclusión", c:5, e:"<b>Cierre o conclusión:</b> termina el reportaje con una reflexión o una frase que deja pensando al lector.", h:`Cuando por fin aparece el sol, la camanchaca se retira hacia el mar. Doña Rosa mira sus mallas empapadas y sonríe. En pleno desierto, esta caleta aprendió que el agua también puede venir del cielo… aunque no llueva.`}
+],
+features:`<ul class="feat">
+<li>🎤 <b>Entrevistas y testimonios:</b> las personas cuentan lo que viven o saben.</li>
+<li>💬 <b>Citas textuales:</b> las palabras exactas de alguien, siempre entre comillas “ ”.</li>
+<li>📊 <b>Datos:</b> números, cifras, resultados de encuestas.</li>
+<li>📷 <b>Fotografías</b> con pie de foto.</li>
+<li>🗂️ <b>Subtítulos</b> que ordenan el cuerpo en partes.</li>
+<li>✍️ <b>Estilo del periodista:</b> puede describir lo que vio o sintió, y a veces escribe en primera persona (“viajamos”, “conocimos”).</li>
+<li>🌎 Trata <b>temas reales</b> y es <b>más largo y detallado</b> que una noticia.</li>
+</ul>`,
+trick:`<div class="trick">🧠 <b>Truco para recordar las partes:</b><br><span class="big2">🚲 “<u>T</u>u <u>B</u>ici <u>L</u>leva <u>C</u>adena y <u>C</u>asco”</span><br>Título · Bajada · Lead · Cuerpo · Cierre<br><br>🕵️ Y recuerda: <b>el reportero es un detective</b>: investiga, entrevista y cuenta.</div>`,
+practice:[
+ MC("¿Cuál es el propósito principal de un reportaje?", ["Investigar y profundizar un tema de interés, con datos y testimonios","Enseñar a armar un objeto paso a paso","Contar una historia inventada con personajes","Convencer al lector de comprar un producto"], "El reportaje investiga a fondo un tema real. Por eso usa entrevistas, datos y fotos.", "Piensa en un periodista detective 🕵️."),
+ MC("¿En qué se diferencia un reportaje de una noticia?", ["El reportaje es más largo y profundiza más en el tema","El reportaje siempre es inventado","La noticia tiene entrevistas y el reportaje nunca","El reportaje no tiene título"], "La noticia cuenta rápido qué pasó; el reportaje investiga y entrega muchos más detalles.", "¿Cuál de los dos es más largo y detallado?"),
+ MC("¿Qué es la <b>bajada</b> de un reportaje?", ["Un texto breve bajo el título que resume o adelanta el tema","El último párrafo, que cierra el reportaje","La lista de materiales","El nombre del fotógrafo"], "La bajada (o epígrafe) va justo debajo del título y resume de qué trata.", "Su nombre te ayuda: está ‘abajo’ de algo…"),
+ MC("El <b>lead</b> o entrada de un reportaje sirve para…", ["Enganchar al lector en el primer párrafo y presentar el tema","Dar advertencias de seguridad","Explicar las palabras difíciles","Despedirse del lector"], "El lead es el primer párrafo: atrapa al lector para que siga leyendo.", "Es como el ‘anzuelo’ 🎣 del reportaje."),
+ TF("Las citas textuales en un reportaje van entre comillas y copian las palabras exactas de una persona entrevistada.", true, "¡Correcto! Las comillas “ ” muestran que son las palabras exactas del entrevistado.", "Piensa en: “Es como magia, pero es ciencia”, dice Benjamín."),
+ TF("El reportaje nunca puede mostrar el estilo personal del periodista.", false, "El reportaje sí puede mostrar el estilo del periodista.", "¿Recuerdas el lead del ejemplo: “Para cualquiera sería un día feo…”?", "El reportaje SÍ puede mostrar el estilo del periodista, por ejemplo cuando describe lo que vio o sintió."),
+ TF("Un reportaje trata temas inventados, como un cuento.", false, "El reportaje es periodístico: habla de hechos y personas reales.", "¿Un periodista inventa o investiga?", "Un reportaje trata temas REALES que el periodista investiga."),
+ DRG("Arrastra cada etiqueta a la parte correcta del reportaje.", [
+   ["Título","<b>Perros de terapia: amigos que sanan</b>"],
+   ["Bajada","<i>En un hospital de Valparaíso, cinco perros visitan cada semana a niños internados. Conocimos su trabajo.</i>"],
+   ["Lead","Toby mueve la cola apenas se abren las puertas del ascensor. Sabe que hoy le toca trabajar."],
+   ["Cuerpo","“Cuando llega Toby, los niños se olvidan de que están enfermos”, cuenta la enfermera Carla Muñoz. Según el hospital, 8 de cada 10 pacientes se sienten más tranquilos después de la visita."],
+   ["Cierre","Quizás Toby no sepa de medicina, pero cada martes entrega algo que no se vende en farmacias: alegría."]
+ ], "Orden: título → bajada → lead (escena que engancha) → cuerpo (cita y datos) → cierre (reflexión final).", "El cuerpo es el que tiene la cita entre comillas y el dato con números."),
+ ORD("Ordena las partes de un reportaje, de arriba hacia abajo.", ["Título","Bajada o epígrafe","Lead o entrada","Cuerpo (con subtítulos, citas y datos)","Cierre o conclusión"], "Recuerda: “Tu Bici Lleva Cadena y Casco” 🚲 = Título, Bajada, Lead, Cuerpo, Cierre.", "Usa el truco de la bici 🚲."),
+ MC("Este reportaje tiene título, bajada, lead y cuerpo. ¿Qué parte le falta?", ["El cierre o conclusión","El título","Una cita textual","La lista de materiales"], "El texto termina de golpe después del dato: le falta un cierre que termine con una reflexión.", "Mira cómo termina el texto… ¿se despide o termina de golpe?", {kind:"detective", passage:P_TORTUGAS}),
+ MC("Un compañero escribió un “reportaje” sobre el reciclaje en su colegio, pero solo puso su opinión: no entrevistó a nadie ni buscó datos. ¿Cuál es el error?", ["Le faltan entrevistas, testimonios y datos: un reportaje debe investigar","Le falta una lista de pasos numerados","Tiene demasiados datos","No tiene ningún error"], "Sin investigación no hay reportaje. Necesita entrevistas, testimonios y datos.", "¿Qué hace siempre un periodista antes de escribir un reportaje?", {kind:"detective"}),
+ MC("Completa: En un reportaje, las palabras exactas de un entrevistado se escriben entre ______.", ["comillas “ ”","paréntesis ( )","asteriscos * *","números 1, 2, 3"], "Las comillas muestran que son las palabras exactas de la persona (cita textual).", "Son dos rayitas arriba, al inicio y al final.", {kind:"complete"}),
+ MC("Completa: Las fotos de un reportaje suelen llevar un ______ que explica lo que se ve.", ["pie de foto","glosario","lead","paso numerado"], "El pie de foto es el texto corto que va bajo la imagen y la explica.", "Está a los ‘pies’ de la foto 📷.", {kind:"complete"}),
+ MC("¿Qué recurso usa el periodista en la frase “Aquí nunca me siento solo…”?", ["Una cita textual (testimonio del entrevistado)","Un glosario","Un paso numerado","Una advertencia"], "Son las palabras exactas de don Héctor, entre comillas: es una cita textual.", "Fíjate en las comillas.", {kind:"comp", passage:P_FARO}),
+ MC("¿Cuál es la <b>bajada</b> de este reportaje?", ["Don Héctor lleva 30 años cuidando el faro de isla Pájaros. Viajamos hasta allá para conocer su vida.","El último guardián del faro","El viento sopla tan fuerte que cuesta abrir la puerta.","Cada vez hay menos faros con cuidadores."], "La bajada va bajo el título y resume de qué trata el reportaje.", "Busca el texto que está justo debajo del título.", {kind:"comp", passage:P_FARO}),
+ MC("¿Por qué “El viento sopla tan fuerte que cuesta abrir la puerta” es un buen lead?", ["Porque describe una escena y engancha al lector para que siga leyendo","Porque da una advertencia de seguridad","Porque explica una palabra difícil","Porque es la conclusión del texto"], "Un buen lead nos ‘mete’ en la escena y nos da ganas de seguir leyendo.", "¿Qué sientes al leerla? ¿Te imaginas el lugar?", {kind:"comp", passage:P_FARO}),
+ MC("¿Dónde es más probable encontrar un reportaje?", ["En un diario, una revista o un programa de TV","En la caja de un juguete","En un diccionario","En un libro de cuentos"], "El reportaje es periodístico: aparece en medios de comunicación.", "¿Dónde trabajan los periodistas?")
+],
+challenge:[
+ MC("¿Qué recursos son típicos de un reportaje?", ["Entrevistas, testimonios, datos y fotografías","Materiales y pasos numerados","Rimas y versos","Personajes inventados y hechizos"], "El reportaje investiga: por eso entrevista, recoge testimonios, busca datos y toma fotos."),
+ TF("El cierre de un reportaje puede terminar con una reflexión o una frase que deje pensando al lector.", true, "Sí: el cierre termina el reportaje y muchas veces deja una reflexión."),
+ MC("El párrafo que va justo después de la bajada y busca atrapar al lector se llama…", ["Lead o entrada","Cierre","Glosario","Pie de foto"], "El lead o entrada es el primer párrafo y engancha al lector."),
+ TF("Un reportaje es más corto y menos detallado que una noticia.", false, "Es al revés.", "", "Un reportaje es MÁS LARGO y MÁS DETALLADO que una noticia."),
+ MC("Lee: “Según la encuesta, 7 de cada 10 estudiantes llegan al colegio caminando.” ¿Qué recurso del reportaje es?", ["Un dato","Una advertencia","Un paso","Una rima"], "Es un dato: una cifra que el periodista obtuvo al investigar."),
+ MC("¿Para qué sirven los subtítulos en el cuerpo del reportaje?", ["Para ordenar la información por temas y facilitar la lectura","Para indicar los materiales","Para cerrar el texto","Para dar la opinión del lector"], "Los subtítulos separan el cuerpo en partes y ordenan la información."),
+ MC("¿Quién escribe un reportaje?", ["Un periodista que investiga el tema","Un fabricante de juguetes","Un poeta que escribe versos","Un personaje de un cuento"], "El reportaje lo escribe un periodista después de investigar.")
+]},
+
+/* ---------------- MISIÓN 2: ARTÍCULO INFORMATIVO ---------------- */
+m2:{num:2, title:"El Artículo Informativo", icon:"🔬", color:"art",
+purpose:`<p class="big">El artículo informativo sirve para <b>informar o explicar</b> un tema de forma <b>clara y objetiva</b>. 🔬</p>
+<p>No cuenta una historia ni da opiniones: entrega <b>información verdadera</b> que se puede comprobar. Es como la voz de una enciclopedia.</p>
+<p>📍 Lo encuentras en enciclopedias, textos escolares, revistas de ciencia y páginas web educativas.</p>`,
+example:[
+ {l:"Título", c:1, e:"<b>Título:</b> dice claramente de qué tema trata el artículo.", h:`<span style="font-size:1.4rem;font-weight:bold">El pingüino de Humboldt: un nadador del Pacífico</span>`},
+ {l:"Introducción", c:2, e:"<b>Introducción:</b> presenta el tema, despierta el interés y adelanta lo que se va a explicar.", h:`Los pingüinos no viven solo en el hielo. En las costas de Chile y Perú habita el pingüino de Humboldt, un ave marina que no vuela, pero que nada con gran rapidez. En este artículo se explica dónde vive, qué come y por qué necesita protección.`},
+ {l:"Desarrollo (con subtítulos)", c:3, e:"<b>Desarrollo:</b> explica el tema en detalle. Está ordenado con <b>subtítulos</b>. Usa lenguaje formal, objetivo y en tercera persona.", h:`<span class="subt">¿Dónde vive?</span>Habita en costas rocosas e islas del océano Pacífico, desde Perú hasta la zona sur de Chile. Construye sus nidos en cuevas o en el suelo, para proteger sus huevos del sol.
+<span class="subt">¿Qué come?</span>Se alimenta principalmente de peces pequeños, como la anchoveta y la sardina. Bucea bajo el agua para atraparlos.
+<span class="subt">¿Por qué necesita protección?</span>Es una especie vulnerable. Sus principales amenazas son la pesca excesiva, que le quita alimento, y la contaminación de las playas.`},
+ {l:"Tabla o infografía", c:7, e:"<b>Recurso visual (tabla, imagen o infografía):</b> resume datos importantes para entenderlos de un vistazo.", h:`<table class="vt"><tr><th>📏 Altura</th><td>Entre 55 y 70 cm</td></tr><tr><th>⚖️ Peso</th><td>Entre 3,5 y 6 kg</td></tr><tr><th>🐟 Alimento</th><td>Peces pequeños</td></tr><tr><th>⚠️ Estado</th><td>Vulnerable</td></tr></table>`},
+ {l:"Conclusión o cierre", c:5, e:"<b>Conclusión o cierre:</b> resume las ideas principales o cierra el tema.", h:`El pingüino de Humboldt es un ave adaptada a la vida en el mar, que habita en las costas de Chile y Perú. Conocerlo y cuidar el océano ayuda a proteger a esta especie.`},
+ {l:"Glosario", c:6, e:"<b>Glosario:</b> explica las palabras difíciles que aparecen en el texto. (También puede haber <b>fuentes</b>: de dónde se sacó la información).", h:`<b>Glosario</b><br><b>Vulnerable:</b> especie que corre riesgo de desaparecer si no se protege.<br><b>Anchoveta:</b> pez pequeño que nada en grandes grupos en el océano Pacífico.`}
+],
+features:`<ul class="feat">
+<li>🎯 <b>Objetivo:</b> NO da opiniones (no dice “yo creo”, “me encanta”, “es lo mejor”).</li>
+<li>👔 <b>Lenguaje formal y preciso:</b> usa palabras exactas, a veces técnicas (mamífero, especie, placa tectónica).</li>
+<li>3️⃣ <b>Tercera persona:</b> “el pingüino vive”, “los volcanes se forman”.</li>
+<li>⏰ Verbos casi siempre en <b>presente</b>.</li>
+<li>🗂️ <b>Subtítulos</b>, 🖼️ <b>imágenes</b>, 📊 <b>esquemas, infografías y tablas</b>.</li>
+<li>📖 <b>Glosario</b> (palabras difíciles) y 📚 <b>fuentes</b> (de dónde viene la información).</li>
+</ul>
+<div class="box tip"><b>🆚 ¿Artículo informativo o reportaje?</b> ¡Se parecen porque los dos informan! Pero el <b>reportaje</b> es periodístico: tiene entrevistas, citas de personas, un lead que engancha y el estilo del periodista. El <b>artículo informativo</b> explica como una enciclopedia: objetivo, ordenado y a veces con glosario.</div>`,
+trick:`<div class="trick">🧠 <b>Truco para recordar las partes:</b><br><span class="big2">🧪 “<u>T</u>engo <u>I</u>deas <u>D</u>e <u>C</u>ientífico”</span><br>Título · Introducción · Desarrollo · Conclusión<br><br>🔬 Y recuerda: <b>el artículo informativo EXPLICA, pero NO OPINA.</b></div>`,
+practice:[
+ MC("¿Cuál es el propósito de un artículo informativo?", ["Informar o explicar un tema de forma clara y objetiva","Dar la opinión del autor para convencer","Enseñar a armar algo paso a paso","Contar una aventura con personajes"], "El artículo informativo explica un tema con información verdadera, sin opinar.", "Piensa en una enciclopedia 📚."),
+ MC("¿Qué tipo de lenguaje usa un artículo informativo?", ["Formal, preciso y objetivo, en tercera persona","Informal y lleno de opiniones","En verso y con rimas","Con órdenes como “corta” y “pega”"], "Usa lenguaje formal, preciso y objetivo, en tercera persona.", "¿Cómo habla una enciclopedia?"),
+ MC("¿Qué parte del artículo presenta el tema y despierta el interés del lector?", ["Introducción","Desarrollo","Conclusión","Glosario"], "La introducción presenta el tema y adelanta lo que se explicará.", "Es la parte que ‘introduce’, o sea, que hace entrar al tema."),
+ MC("El <b>desarrollo</b> de un artículo informativo…", ["Explica el tema en detalle, muchas veces separado con subtítulos","Es solo el título","Es una lista de materiales","Es la opinión del autor"], "El desarrollo es la parte más larga: explica todo, ordenado con subtítulos.", "Es la parte del medio y la más larga."),
+ MC("¿Para qué sirve un <b>glosario</b>?", ["Para explicar el significado de palabras difíciles del texto","Para dar los pasos en orden","Para mostrar la foto principal","Para contar la opinión del autor"], "El glosario es como un mini diccionario al final del texto.", "Es como un mini diccionario 📖."),
+ TF("En un artículo informativo el autor debe dar su opinión, por ejemplo: “Creo que los volcanes son lo más lindo del mundo”.", false, "El artículo informativo es objetivo: no opina.", "¿El artículo informativo explica u opina?", "El artículo informativo NO da opiniones: es objetivo y solo presenta información que se puede comprobar."),
+ TF("Las infografías, tablas y esquemas ayudan a entender mejor la información de un artículo informativo.", true, "Los recursos visuales resumen y ordenan los datos para entenderlos mejor.", "Piensa en la tabla del pingüino 🐧."),
+ TF("La conclusión de un artículo informativo resume las ideas principales o cierra el tema.", true, "La conclusión es el cierre: resume o termina el tema.", "¿Qué hace la última parte?"),
+ DRG("Arrastra cada etiqueta a la parte correcta del artículo informativo.", [
+   ["Título","<b>El picaflor de Arica</b>"],
+   ["Introducción","El picaflor de Arica es una de las aves más pequeñas de Chile. A continuación, se explica cómo es, dónde vive y por qué está en peligro."],
+   ["Desarrollo","<b>¿Cómo es?</b> Mide cerca de 7 cm y aletea muy rápido. <b>¿Dónde vive?</b> Habita en los valles de la Región de Arica y Parinacota, donde se alimenta del néctar de las flores."],
+   ["Conclusión","El picaflor de Arica es un ave única de nuestro país. Proteger su hábitat es clave para que no desaparezca."],
+   ["Glosario","<b>Néctar:</b> líquido dulce que producen las flores."]
+ ], "Título → introducción (presenta el tema) → desarrollo (con subtítulos) → conclusión (cierra) → glosario (palabras difíciles).", "El glosario explica una palabra difícil; el desarrollo tiene los subtítulos."),
+ ORD("Ordena las partes de un artículo informativo.", ["Título","Introducción","Desarrollo (con subtítulos)","Conclusión o cierre"], "“Tengo Ideas De Científico” 🧪 = Título, Introducción, Desarrollo, Conclusión.", "Usa el truco del científico 🧪."),
+ MC("¿Qué oración NO debería estar en un artículo informativo?", ["En mi opinión, son los animales más bonitos del océano y todos deberían amarlos.","Los tiburones ballena son los peces más grandes del mundo.","Pueden medir más de 12 metros de largo.","Se alimentan de plancton, que filtran con su enorme boca."], "“En mi opinión…” es una opinión personal. El artículo informativo debe ser objetivo.", "Busca la oración donde el autor dice lo que él piensa.", {kind:"detective", passage:P_TIBURON}),
+ MC("Un artículo sobre el Sistema Solar tiene título, introducción y desarrollo, pero termina de golpe después de hablar de Neptuno. ¿Qué le falta?", ["La conclusión o cierre","El título","La introducción","Una lista de materiales"], "Le falta la conclusión, que resume y cierra el tema.", "¿Qué parte va al final?", {kind:"detective"}),
+ MC("¿Qué oración está escrita en lenguaje objetivo, como en un artículo informativo?", ["El agua hierve a 100 °C a nivel del mar.","El agua es lo más aburrido del mundo.","Yo creo que el agua fría es mejor.","¡Me encanta nadar en agua tibia!"], "Es un dato que se puede comprobar, sin opinión ni emociones.", "Busca un dato, no un gusto personal.", {kind:"detective"}),
+ MC("Completa en tercera persona: “Los koalas ______ casi 20 horas al día.”", ["duermen","duermo","dormimos","duermes"], "“Los koalas duermen” está en tercera persona, como se escribe un artículo informativo.", "¿Quiénes duermen? Ellos, los koalas.", {kind:"complete"}),
+ MC("Completa con la palabra más precisa: “El guanaco es un ______ que vive en Chile.”", ["mamífero","bicho","animalito tierno","cosa"], "“Mamífero” es una palabra precisa y formal. “Bicho” o “animalito tierno” son informales.", "¿Qué palabra usaría un científico?", {kind:"complete"}),
+ MC("¿Cuál es el propósito de este texto?", ["Explicar por qué ocurren los terremotos","Enseñar a construir un edificio paso a paso","Contar la historia de un niño en un terremoto","Dar la opinión del autor sobre Chile"], "El texto explica qué son los terremotos y por qué ocurren: es un artículo informativo.", "Lee el título y la pregunta de la introducción.", {kind:"comp", passage:P_TERREMOTOS}),
+ MC("¿Qué es “¿Por qué tiembla tanto en Chile?” dentro del texto?", ["Un subtítulo del desarrollo","La conclusión","El título","La bajada"], "Es un subtítulo: ordena una parte del desarrollo.", "Está en negrita dentro del texto, en el medio.", {kind:"comp", passage:P_TERREMOTOS}),
+ MC("Según el texto, ¿por qué tiembla tanto en Chile?", ["Porque la placa de Nazca se mete bajo la placa Sudamericana","Porque el mar es muy grande","Porque hay muchos edificios altos","Porque llueve mucho en invierno"], "El texto dice que Chile está donde se encuentran dos placas y la de Nazca se mete bajo la Sudamericana.", "Relee el segundo subtítulo.", {kind:"comp", passage:P_TERREMOTOS})
+],
+challenge:[
+ MC("¿Dónde es común encontrar artículos informativos?", ["En enciclopedias, textos escolares y revistas de ciencia","En la caja de un mueble para armar","En un libro de chistes","En una carta a un amigo"], "Los artículos informativos están en enciclopedias, textos escolares y revistas de divulgación."),
+ TF("El artículo informativo se escribe normalmente en primera persona, contando lo que el autor siente.", false, "Se escribe en tercera persona y sin sentimientos ni opiniones.", "", "El artículo informativo se escribe en TERCERA persona y de forma objetiva."),
+ MC("¿Qué parte del artículo informativo resume las ideas o cierra el tema?", ["Conclusión","Introducción","Título","Glosario"], "La conclusión cierra el artículo."),
+ MC("¿Qué recurso NO es típico de un artículo informativo?", ["Opiniones personales del autor","Subtítulos","Glosario","Infografías"], "Las opiniones no van: el artículo informativo es objetivo."),
+ TF("Las fuentes indican de dónde se sacó la información del artículo.", true, "Sí: las fuentes muestran de dónde viene la información, para que se pueda comprobar."),
+ MC("¿Cuál sería un buen título para un artículo informativo?", ["Cómo respiran los peces","¡Los peces son lo máximo!","Mi pez Nemo y yo","Corta, pega y decora tu pecera"], "“Cómo respiran los peces” anuncia un tema para explicar, sin opinión."),
+ MC("“La Luna tarda unos 27 días en dar una vuelta alrededor de la Tierra.” ¿Por qué esta oración es objetiva?", ["Porque presenta un dato que se puede comprobar, sin opinión","Porque usa la palabra “Luna”","Porque cuenta lo que siente el autor","Porque tiene un verbo en imperativo"], "Es objetiva porque es información comprobable, sin gustos ni opiniones.")
+]},
+
+/* ---------------- MISIÓN 3: MANUAL DE INSTRUCCIONES ---------------- */
+m3:{num:3, title:"El Manual de Instrucciones", icon:"🛠️", color:"man",
+purpose:`<p class="big">El texto instructivo (como un manual de instrucciones o una receta) sirve para <b>enseñar a hacer o usar algo paso a paso</b>. 🛠️</p>
+<p>Si sigues los pasos <b>en orden</b>, ¡logras el objetivo!</p>
+<p>📍 Lo encuentras en cajas de juguetes, recetas de cocina, manuales de aparatos, reglas de juegos de mesa y experimentos.</p>`,
+example:[
+ {l:"Título u objetivo", c:1, e:"<b>Título u objetivo:</b> dice qué vas a lograr al seguir las instrucciones.", h:`<span style="font-size:1.4rem;font-weight:bold">🌋 Cómo hacer un volcán en erupción</span><br>Objetivo: construir un volcán casero y observar una reacción química.`},
+ {l:"Materiales", c:2, e:"<b>Materiales o componentes:</b> todo lo que necesitas ANTES de empezar. Suelen ir en lista.", h:`<b>Materiales:</b><br>• 1 botella plástica pequeña<br>• Plasticina<br>• 2 cucharadas de bicarbonato<br>• 1/2 taza de vinagre<br>• Unas gotas de colorante rojo<br>• 1 bandeja`},
+ {l:"Instrucciones o pasos", c:3, e:"<b>Instrucciones o pasos:</b> numerados y EN ORDEN. Usan verbos en imperativo (pon, cubre, echa) y conectores de orden (primero, luego, después, finalmente).", h:`<b>Pasos:</b><br>1. <u>Primero</u>, <b>pon</b> la botella en el centro de la bandeja.<br>2. <u>Luego</u>, <b>cubre</b> la botella con plasticina dándole forma de cerro, sin tapar la boca.<br>3. <u>Después</u>, <b>echa</b> el bicarbonato dentro de la botella.<br>4. <b>Agrega</b> unas gotas de colorante rojo.<br>5. <u>Finalmente</u>, <b>vierte</b> el vinagre y aléjate un poco. ¡Mira la erupción!`},
+ {l:"Imagen de apoyo", c:7, e:"<b>Imágenes o ilustraciones:</b> muestran cómo hacer los pasos o cómo debe quedar el resultado.", h:`<span class="fakeimg">🖼️ [Ilustración: volcán de plasticina sobre la bandeja, con espuma roja saliendo por arriba]</span>`},
+ {l:"Advertencias o precauciones", c:6, e:"<b>Advertencias o precauciones:</b> avisan los peligros o cuidados para evitar accidentes o errores. Suelen tener el símbolo ⚠️.", h:`⚠️ <b>Precauciones:</b> Haz el experimento con un adulto. No acerques la mezcla a los ojos ni la pruebes. Trabaja sobre la bandeja para no ensuciar.`}
+],
+features:`<ul class="feat">
+<li>🔢 <b>Pasos numerados y en orden:</b> si cambias el orden, ¡no resulta!</li>
+<li>🗣️ <b>Verbos en imperativo</b> (corta, mezcla, presiona) <b>o en infinitivo</b> (cortar, mezclar, presionar).</li>
+<li>➡️ <b>Conectores de orden:</b> primero, luego, después, a continuación, finalmente.</li>
+<li>🎯 <b>Lenguaje claro, preciso y breve:</b> oraciones cortas y fáciles de seguir.</li>
+<li>🖼️ <b>Imágenes o ilustraciones</b> de apoyo.</li>
+<li>⚠️ <b>Advertencias</b> para evitar accidentes.</li>
+</ul>
+<h3>🔄 Imperativo e infinitivo</h3>
+<table class="vt"><tr><th>Infinitivo</th><th>Imperativo (tú)</th></tr>
+<tr><td>cortar</td><td>corta</td></tr><tr><td>mezclar</td><td>mezcla</td></tr><tr><td>poner</td><td>pon</td></tr><tr><td>agregar</td><td>agrega</td></tr><tr><td>presionar</td><td>presiona</td></tr></table>
+<p class="small muted">El infinitivo termina en <b>-ar, -er, -ir</b>. El imperativo es como una orden amable: “¡corta!”.</p>`,
+trick:`<div class="trick">🧠 <b>Truco para recordar las partes:</b><br><span class="big2">“¿QUÉ? ¿CON QUÉ? ¿CÓMO? ¡CUIDADO!”</span><br>¿Qué? = título u objetivo · ¿Con qué? = materiales · ¿Cómo? = pasos e imágenes · ¡Cuidado! = advertencias<br><br>🎵 <b>“Primero, luego y al final: ¡así se sigue un manual!”</b></div>`,
+practice:[
+ MC("¿Cuál es el propósito de un manual de instrucciones?", ["Enseñar a hacer o usar algo paso a paso","Investigar un tema con entrevistas","Dar la opinión del autor","Contar una historia con personajes"], "El texto instructivo enseña a hacer o usar algo siguiendo pasos.", "Piensa en la caja de un LEGO 🧱."),
+ MC("¿Qué parte del instructivo dice lo que necesitas antes de empezar?", ["Materiales o componentes","Advertencias","Título","Conclusión"], "Los materiales (o componentes) son todo lo que necesitas reunir antes de empezar.", "Responde la pregunta “¿con qué?”."),
+ MC("¿Para qué sirven las advertencias o precauciones?", ["Para avisar peligros y cuidados, y así evitar accidentes","Para decir el nombre del producto","Para contar la historia del inventor","Para explicar palabras difíciles"], "Las advertencias avisan qué cuidados tener para no lastimarte ni romper nada.", "Llevan el símbolo ⚠️."),
+ MC("¿Cuál de estos verbos está en <b>imperativo</b>?", ["Mezcla","Mezclaron","Mezclaba","Mezclará"], "“Mezcla” es una orden: está en imperativo. Los otros están en pasado o futuro.", "El imperativo suena como una orden: “¡___ la masa!”."),
+ MC("¿Cuál de estas palabras es un <b>conector de orden</b>?", ["Luego","Pero","Porque","Aunque"], "“Luego” indica el orden de los pasos. “Pero”, “porque” y “aunque” no indican orden.", "¿Cuál dice qué viene después?"),
+ TF("En un instructivo, el orden de los pasos no importa.", false, "El orden es clave: si lo cambias, el resultado puede fallar.", "¿Podrías hornear un queque antes de mezclar los ingredientes?", "En un instructivo, el orden de los pasos SÍ importa: deben seguirse en orden."),
+ TF("Los verbos de un instructivo pueden estar en imperativo (“corta”) o en infinitivo (“cortar”).", true, "Las dos formas son correctas en un texto instructivo.", "Piensa en recetas: “Batir los huevos” o “Bate los huevos”."),
+ TF("Las imágenes o ilustraciones de un manual ayudan a entender cómo hacer cada paso.", true, "Las imágenes muestran cómo hacer los pasos o cómo debe quedar el resultado.", "¿Te sirven los dibujos de un manual de LEGO?"),
+ DRG("Arrastra cada etiqueta a la parte correcta del instructivo.", [
+   ["Título u objetivo","<b>Cómo hacer germinar un poroto</b>"],
+   ["Materiales","1 vaso transparente, algodón, 2 porotos y agua."],
+   ["Pasos","1. Pon algodón dentro del vaso. 2. Coloca los porotos entre el algodón y la pared del vaso. 3. Moja el algodón con un poco de agua."],
+   ["Imagen de apoyo","🖼️ [Dibujo: vaso con algodón y un poroto con raíz]"],
+   ["Advertencia","⚠️ No riegues demasiado: si el algodón queda inundado, el poroto se puede pudrir."]
+ ], "Título → materiales → pasos numerados → imagen → advertencia.", "La advertencia tiene el símbolo ⚠️ y los pasos tienen números."),
+ ORD("Ordena los pasos para lavarse bien las manos. 🧼", ["Moja tus manos con agua.","Echa jabón en tus manos.","Frota las palmas, los dedos y las uñas por 20 segundos.","Enjuaga bien con agua.","Sécate con una toalla limpia."], "Primero mojar, luego jabón, frotar, enjuagar y al final secar.", "¿Qué haces justo al final?"),
+ ORD("Ordena los pasos para preparar leche con cacao. ☕", ["Primero, pide ayuda a un adulto para entibiar la leche.","Luego, vierte la leche en una taza.","Después, agrega dos cucharaditas de cacao.","Finalmente, revuelve hasta que se disuelva."], "Los conectores de orden te ayudan: primero → luego → después → finalmente.", "Fíjate en las palabras del inicio de cada paso."),
+ MC("Lee el instructivo. ¿Qué parte le falta?", ["Una advertencia (por ejemplo: pide ayuda a un adulto para usar el cuchillo)","Un título","Los materiales","Los pasos numerados"], "Usa un cuchillo, pero no tiene ninguna advertencia o precaución.", "¿Hay algo peligroso en los materiales?", {kind:"detective", passage:P_LIMONADA}),
+ MC("Un instructivo dice: “1. Sirve el té. 2. Pon la bolsita de té en la taza. 3. Pide a un adulto que agregue agua caliente.” ¿Cuál es el error?", ["Los pasos están desordenados: servir debería ir al final","Le falta el título","Usa verbos en imperativo","Tiene demasiados pasos"], "No puedes servir el té antes de prepararlo: los pasos están fuera de orden.", "¿Qué paso debería ir al final?", {kind:"detective"}),
+ MC("Completa con el verbo en imperativo: “______ la hoja por la mitad.” (doblar)", ["Dobla","Doblé","Doblaba","Doblarán"], "“Dobla” es imperativo: da una instrucción directa.", "Suena como una orden amable.", {kind:"complete"}),
+ MC("Elige el conector correcto: “Primero, lava las frutillas. ______, córtalas en trozos. Finalmente, agrégales yogur.”", ["Después","Porque","Pero","Sin embargo"], "“Después” es un conector de orden: indica el paso que sigue.", "Necesitas una palabra que diga qué viene a continuación.", {kind:"complete"}),
+ MC("¿Qué debes hacer justo después de enchufar el cargador en la pared?", ["Conectar el otro extremo del cable a la tablet","Conectar el cable al cargador","Esperar que llegue al 100 %","Dejar la tablet sobre la cama"], "El paso 3, que va después de enchufar (paso 2), es conectar el cable a la tablet.", "Busca el paso 2 y mira cuál sigue.", {kind:"comp", passage:P_TABLET}),
+ MC("¿Qué parte del texto es “no la dejes sobre la cama o almohadas mientras se carga”?", ["Una advertencia o precaución","Un material","El título","Un paso numerado"], "Avisa un cuidado para evitar problemas: es una precaución.", "Mira el símbolo ⚠️.", {kind:"comp", passage:P_TABLET}),
+ MC("¿En qué forma están los verbos “conecta”, “enchufa” y “espera”?", ["Imperativo","Infinitivo","Pasado","Futuro"], "Son órdenes o instrucciones directas: están en imperativo.", "En infinitivo serían “conectar”, “enchufar”, “esperar”.", {kind:"comp", passage:P_TABLET})
+],
+challenge:[
+ MC("¿Cuál de estos textos es un texto instructivo?", ["Una receta de queque","Una noticia sobre un partido","Un poema sobre el mar","Un artículo sobre los planetas"], "La receta enseña a preparar algo paso a paso: es un texto instructivo."),
+ TF("Los pasos de un instructivo suelen ir numerados.", true, "Sí: los números ayudan a seguir el orden."),
+ MC("“Cortar el papel. Pegar las alas. Decorar el avión.” Estos verbos están en…", ["Infinitivo","Imperativo","Pasado","Futuro"], "Terminan en -ar: están en infinitivo."),
+ MC("¿Qué pregunta responde la sección “Materiales”?", ["¿Con qué lo hago?","¿Por qué pasa?","¿Quién lo dijo?","¿Cuándo ocurrió?"], "Los materiales dicen con qué cosas vas a trabajar."),
+ TF("Un buen instructivo usa lenguaje confuso y palabras difíciles para que parezca más serio.", false, "Debe ser claro para que cualquiera lo pueda seguir.", "", "Un buen instructivo usa lenguaje CLARO, PRECISO y BREVE."),
+ MC("¿Cuál de estas es una advertencia?", ["⚠️ No mires directamente al Sol, aunque uses anteojos oscuros.","2. Pega la cartulina.","Materiales: tijeras y pegamento.","Cómo hacer un reloj de sol"], "Avisa un peligro para cuidarte: es una advertencia."),
+ MC("¿Qué conector usarías para el último paso?", ["Finalmente","Primero","Porque","Pero"], "“Finalmente” indica que es el último paso.")
+]}
+};
+
+/* =========================================================
+   MISIÓN 4: RONDAS "¿QUÉ TEXTO ES?"
+   ========================================================= */
+const ROUNDS = [
+ WH("“Llevo 40 años vendiendo sopaipillas en esta esquina”, cuenta doña Marta, mientras los estudiantes hacen fila frente a su carrito.", "R", "Tiene una cita textual y un testimonio de una persona entrevistada, y describe una escena: es un reportaje."),
+ WH("Las abejas son insectos que viven en colonias. Cada colonia tiene una reina, obreras y zánganos, y cada grupo cumple una función distinta.", "A", "Explica un tema de forma objetiva y en tercera persona, sin entrevistas: es un artículo informativo."),
+ WH("1. Abre la caja con cuidado. 2. Retira las piezas y revisa que estén todas. 3. Encaja la pieza A en la pieza B.", "M", "Pasos numerados y verbos en imperativo (abre, retira, encaja): es un manual de instrucciones."),
+ WH("Viajamos hasta Chiloé para conocer a los últimos constructores de palafitos. Esto fue lo que nos contaron.", "R", "“Viajamos” y “nos contaron” muestran que un periodista investigó y entrevistó: es la bajada de un reportaje."),
+ WH("El corazón es un órgano muscular que bombea la sangre por todo el cuerpo. En un adulto, late entre 60 y 100 veces por minuto en reposo.", "A", "Entrega información científica y datos objetivos, como una enciclopedia: artículo informativo."),
+ WH("⚠️ No introduzcas objetos metálicos en el enchufe. Mantén el aparato lejos del alcance de niños pequeños.", "M", "Son advertencias con verbos en imperativo: son parte de un manual de instrucciones."),
+ WH("Glosario — Fotosíntesis: proceso mediante el cual las plantas producen su alimento usando la luz del sol.", "A", "El glosario explica palabras difíciles: es un recurso típico del artículo informativo."),
+ WH("Mientras camino por el patio del colegio, veo a un grupo de niños con lupas buscando insectos. Su profesora, Ana Rojas, me explica: “Aquí aprenden ciencia con las manos”.", "R", "¡Cuidado! Habla de ciencia, pero el periodista cuenta lo que ve (“camino”, “veo”) y entrevista a la profesora: es un reportaje."),
+ WH("Materiales: 2 hojas de papel lustre, tijeras, pegamento en barra y un lápiz.", "M", "Una lista de materiales es parte de un texto instructivo."),
+ WH("Los volcanes se forman cuando el magma sube desde el interior de la Tierra y sale a la superficie. En Chile existen muchos volcanes activos, como el Villarrica.", "A", "Explica cómo se forman los volcanes de forma objetiva: artículo informativo."),
+ WH("Según una encuesta que hicimos a 300 familias, 6 de cada 10 tienen al menos una mascota. Pero ¿quién las cuida cuando se van de vacaciones? Fuimos a averiguarlo.", "R", "¡Ojo! Tiene datos, pero son de una investigación periodística (“hicimos”, “fuimos a averiguarlo”): es un reportaje."),
+ WH("Primero, lava bien las papas. Luego, pélalas con ayuda de un adulto. Después, córtalas en cubos.", "M", "Conectores de orden (primero, luego, después) y verbos en imperativo: manual de instrucciones."),
+ WH("El desierto de Atacama es uno de los lugares más secos del planeta. En algunas zonas pueden pasar años sin que caiga una gota de lluvia.", "A", "Explica un tema con datos objetivos y en tercera persona: artículo informativo."),
+ WH("El entrenador del club de fútbol infantil nos recibe en la cancha embarrada. “Aquí no importa ganar, sino aprender a jugar en equipo”, dice mientras los niños corren detrás de la pelota.", "R", "Escena contada por el periodista (“nos recibe”) y cita entre comillas del entrenador: reportaje."),
+ WH("Para encender la consola, mantén presionado el botón de inicio durante tres segundos, hasta que se ilumine la luz azul.", "M", "Enseña a usar un aparato con un verbo en imperativo (mantén): manual de instrucciones."),
+ WH("Las ballenas azules son los animales más grandes que han existido. Pueden medir hasta 30 metros de largo y se alimentan principalmente de krill, un pequeño crustáceo.", "A", "Datos objetivos sobre un animal, sin entrevistas ni opiniones: artículo informativo.")
+];
+
+/* =========================================================
+   PRUEBA FINAL: BANCO DE 34 PREGUNTAS (tag = misión)
+   ========================================================= */
+const FINAL_BANK = [
+ // Reportaje (m1)
+ MC("¿Cuál es el propósito del reportaje?", ["Investigar y profundizar en un tema de interés","Enseñar a usar un aparato","Explicar palabras difíciles","Contar un cuento de fantasía"], "El reportaje investiga a fondo un tema real, con entrevistas, datos y fotos.", "", {tag:"m1"}),
+ ORD("Ordena las partes del reportaje.", ["Título","Bajada o epígrafe","Lead o entrada","Cuerpo","Cierre o conclusión"], "Título → bajada → lead → cuerpo → cierre (“Tu Bici Lleva Cadena y Casco”).", "", {tag:"m1"}),
+ TF("La bajada es el párrafo final del reportaje.", false, "La bajada no va al final.", "", "La bajada va DEBAJO DEL TÍTULO y resume de qué trata el reportaje. El párrafo final es el cierre.", {tag:"m1"}),
+ MC("¿Qué parte del reportaje es: “Son las seis de la mañana y el puerto ya está lleno de gaviotas y pescadores”?", ["Lead o entrada","Título","Glosario","Materiales"], "Es el primer párrafo que describe una escena para enganchar al lector: el lead.", "", {tag:"m1"}),
+ MC("¿Cuál de estos es un testimonio?", ["“Yo vi cómo el río se llevó el puente”, relata Pedro, vecino del sector.","El río tiene 80 kilómetros de largo.","1. Cruza el puente con cuidado.","Glosario: caudal, cantidad de agua de un río."], "Un testimonio es lo que cuenta una persona que vivió algo, con sus palabras exactas.", "", {tag:"m1"}),
+ TF("El reportaje puede incluir fotografías con pie de foto.", true, "Sí: las fotos con pie de foto son un recurso típico del reportaje.", "", "", {tag:"m1"}),
+ DRG("Arrastra cada etiqueta a la parte correcta del reportaje.", [
+   ["Título","<b>La biblioteca que viaja en bicicleta</b>"],
+   ["Bajada","<i>Cada viernes, un profesor de Talca recorre los cerros en su bici cargada de libros. Lo acompañamos en su ruta.</i>"],
+   ["Cuerpo","“Algunos niños no tienen libros en su casa, por eso vengo yo”, explica el profesor Luis Díaz. Ya ha prestado más de 500 libros."],
+   ["Cierre","Al atardecer, la bici vuelve más liviana. Los libros ya encontraron nuevos lectores."]
+ ], "Título → bajada (resume) → cuerpo (cita y dato) → cierre (reflexión final).", "", {tag:"m1"}),
+ MC("Las palabras exactas de un entrevistado, escritas entre comillas, se llaman…", ["Cita textual","Glosario","Advertencia","Introducción"], "Una cita textual copia exactamente lo que dijo alguien, entre comillas.", "", {tag:"m1"}),
+ // Artículo informativo (m2)
+ MC("¿Cuál es el propósito del artículo informativo?", ["Informar o explicar un tema de forma clara y objetiva","Convencer con opiniones","Enseñar a armar algo paso a paso","Entretener con un cuento"], "El artículo informativo explica un tema con información verdadera, sin opiniones.", "", {tag:"m2"}),
+ ORD("Ordena las partes del artículo informativo.", ["Título","Introducción","Desarrollo","Conclusión"], "Título → introducción → desarrollo → conclusión (“Tengo Ideas De Científico”).", "", {tag:"m2"}),
+ TF("El artículo informativo usa lenguaje objetivo y sin opiniones.", true, "Correcto: es objetivo, formal y en tercera persona.", "", "", {tag:"m2"}),
+ MC("¿Qué parte del artículo informativo explica el tema en detalle, muchas veces con subtítulos?", ["Desarrollo","Introducción","Conclusión","Título"], "El desarrollo es la parte más larga y está ordenada con subtítulos.", "", {tag:"m2"}),
+ MC("¿Qué oración podría estar en un artículo informativo?", ["Los murciélagos son los únicos mamíferos capaces de volar.","Los murciélagos me dan mucho miedo.","Corta la cartulina en forma de murciélago.","“Los vi volar anoche”, cuenta Rosa, vecina del barrio."], "Es un dato objetivo y comprobable, en tercera persona.", "", {tag:"m2"}),
+ MC("¿Qué parte del artículo informativo presenta el tema al lector?", ["Introducción","Desarrollo","Glosario","Conclusión"], "La introducción presenta el tema y despierta el interés.", "", {tag:"m2"}),
+ MC("¿Qué error tiene este artículo informativo? “Los delfines son mamíferos marinos. Respiran aire por un orificio en la cabeza. ¡Son los mejores animales y los que más me gustan!”", ["Incluye una opinión personal, y el artículo informativo debe ser objetivo","Le falta una lista de materiales","Tiene pasos desordenados","No tiene ningún error"], "“Son los mejores… los que más me gustan” es una opinión. El artículo informativo no opina.", "", {tag:"m2", kind:"detective"}),
+ DRG("Arrastra cada etiqueta a la parte correcta del artículo informativo.", [
+   ["Título","<b>Las arañas: tejedoras expertas</b>"],
+   ["Introducción","Muchas personas creen que las arañas son insectos, pero no lo son. En este artículo se explica qué son y cómo fabrican su tela."],
+   ["Desarrollo","<b>¿Qué son?</b> Son arácnidos: tienen ocho patas y su cuerpo se divide en dos partes. <b>¿Cómo tejen?</b> Producen seda en unas glándulas de su abdomen."],
+   ["Conclusión","Las arañas son arácnidos con una gran habilidad para tejer, y cumplen un rol importante al controlar insectos."]
+ ], "Título → introducción → desarrollo con subtítulos → conclusión.", "", {tag:"m2"}),
+ TF("El glosario explica palabras difíciles que aparecen en el texto.", true, "Sí: el glosario es como un mini diccionario del artículo.", "", "", {tag:"m2"}),
+ // Manual de instrucciones (m3)
+ MC("¿Cuál es el propósito del manual de instrucciones?", ["Enseñar a hacer o usar algo paso a paso","Investigar un tema con entrevistas","Explicar un tema sin pasos","Dar opiniones sobre un producto"], "El texto instructivo enseña a hacer o usar algo, paso a paso.", "", {tag:"m3"}),
+ ORD("Ordena los pasos para hacer un avión de papel. ✈️", ["Dobla la hoja por la mitad a lo largo y vuelve a abrirla.","Dobla las dos esquinas de arriba hacia la línea del centro.","Dobla la hoja por la mitad, hacia afuera.","Baja cada lado para formar las alas.","Lanza tu avión suavemente hacia adelante."], "Primero se marca el centro, luego se doblan las puntas, se dobla por la mitad, se forman las alas y al final se lanza.", "", {tag:"m3"}),
+ TF("Las advertencias nunca aparecen en los manuales de instrucciones.", false, "Las advertencias son una parte importante del manual.", "", "Las advertencias SÍ son parte del manual: avisan peligros y cuidados.", {tag:"m3"}),
+ MC("¿Qué verbo está en imperativo?", ["Pega","Pegamos","Pegó","Pegaría"], "“Pega” es una instrucción directa: imperativo.", "", {tag:"m3"}),
+ MC("¿Qué parte del manual es: “Contenido de la caja: 1 robot, 4 pilas AA, 1 control remoto”?", ["Materiales o componentes","Advertencia","Pasos","Título"], "Es la lista de lo que trae la caja: los componentes.", "", {tag:"m3"}),
+ MC("“______, pon la masa en el horno.” ¿Qué conector indica que es el último paso?", ["Finalmente","Primero","Pero","Porque"], "“Finalmente” indica el último paso.", "", {tag:"m3"}),
+ MC("Instructivo: “Cómo hacer un marcapáginas. Pasos: 1. Recorta una cartulina de 5 × 15 cm. 2. Decórala con plumones. 3. Hazle un agujero y pasa una cinta. ⚠️ Pide ayuda para usar la perforadora.” ¿Qué parte le falta?", ["Los materiales","El título","Los pasos","La advertencia"], "No dice qué materiales se necesitan (cartulina, plumones, cinta, perforadora).", "", {tag:"m3", kind:"detective"}),
+ DRG("Arrastra cada etiqueta a la parte correcta del instructivo.", [
+   ["Título u objetivo","<b>Cómo hacer una brújula casera</b>"],
+   ["Materiales","1 aguja, 1 imán, 1 corcho pequeño y 1 plato con agua."],
+   ["Pasos","1. Frota la aguja con el imán 20 veces en la misma dirección. 2. Atraviesa el corcho con la aguja. 3. Pon el corcho a flotar en el agua y observa hacia dónde apunta."],
+   ["Advertencia","⚠️ Pide ayuda a un adulto: la aguja tiene punta y puede pincharte."]
+ ], "Título → materiales → pasos → advertencia.", "", {tag:"m3"}),
+ TF("Un manual de instrucciones debe usar un lenguaje claro y preciso.", true, "Sí: así cualquiera puede seguir los pasos sin confundirse.", "", "", {tag:"m3"}),
+ // Comparar (m4)
+ WH("Hoy visitamos una pequeña escuela en una isla del sur de Chile. Allí, los 12 alumnos llegan en bote. “Me gusta mi escuela porque veo delfines camino a clases”, dice Tomás.", "R", "Un periodista visita un lugar y entrevista a un niño (cita entre comillas): reportaje.", {tag:"m4"}),
+ WH("La Tierra da una vuelta completa sobre sí misma cada 24 horas, aproximadamente. Este movimiento se llama rotación y produce el día y la noche.", "A", "Explica un fenómeno de forma objetiva: artículo informativo.", {tag:"m4"}),
+ WH("Para armar tu estante: 1. Une las piezas laterales con los tornillos. 2. Coloca las repisas. ⚠️ Usa guantes para no dañarte las manos.", "M", "Pasos numerados, imperativo y advertencia: manual de instrucciones.", {tag:"m4"}),
+ WH("Los pulpos tienen tres corazones y sangre de color azul. Además, pueden cambiar el color de su piel para camuflarse.", "A", "Datos objetivos sobre un animal, en tercera persona: artículo informativo.", {tag:"m4"}),
+ MC("¿Cuál es una diferencia entre el reportaje y el artículo informativo?", ["El reportaje se basa en una investigación periodística con entrevistas y testimonios; el artículo informativo explica un tema de forma objetiva, como una enciclopedia","El artículo informativo tiene pasos numerados","El reportaje no tiene título","No hay ninguna diferencia"], "Los dos informan, pero el reportaje es periodístico (entrevistas, testimonios, estilo del periodista) y el artículo explica objetivamente.", "", {tag:"m4"}),
+ MC("¿Qué tipo de texto usarías para aprender a armar una carpa?", ["Manual de instrucciones","Reportaje","Artículo informativo","Poema"], "Para aprender a armar algo necesitas pasos en orden: un manual de instrucciones.", "", {tag:"m4"}),
+ MC("¿Qué tipo de texto usarías para saber cómo viven y qué comen los pumas?", ["Artículo informativo","Manual de instrucciones","Receta de cocina","Poema"], "Para aprender información sobre un tema, lo ideal es un artículo informativo.", "", {tag:"m4"}),
+ MC("¿Qué tipo de texto contaría cómo vive una familia de pescadores de Chiloé, con entrevistas y fotografías?", ["Reportaje","Manual de instrucciones","Artículo informativo","Glosario"], "Entrevistas, fotos y la vida real de personas: reportaje.", "", {tag:"m4"})
+];
+
+/* =========================================================
+   MOTOR DE PREGUNTAS
+   modos: "practice" (pistas y reintentos), "challenge" (1 intento,
+   con explicación), "exam" (1 intento, sin retroalimentación)
+   ========================================================= */
+function expOf(q){
+  let s = q.exp || "";
+  if(q.type === "tf" && q.a === false && q.fix) s += '<div class="fix">✏️ <b>Versión correcta:</b> ' + q.fix + '</div>';
+  return s;
+}
+function correctText(q){
+  if(q.type === "mc") return q.opts[q.a];
+  if(q.type === "tf") return (q.a ? "Verdadero" : "Falso") + (q.a === false && q.fix ? " — " + q.fix : "");
+  if(q.type === "order") return q.items.map((t,i)=>(i+1) + ". " + t).join("<br>");
+  if(q.type === "drag") return q.parts.map(p=>"<b>" + p[0] + ":</b> " + strip(p[1]).slice(0,70) + (strip(p[1]).length>70?"…":"")).join("<br>");
+  return "";
+}
+
+function uiChoice(q, body, mode, ctx){
+  const isTF = q.type === "tf";
+  const opts = isTF ? ["✅ Verdadero","❌ Falso"] : q.opts;
+  const ans = isTF ? (q.a ? 0 : 1) : q.a;
+  const order = (isTF || q.noShuffle) ? opts.map((_,i)=>i) : shuffle(opts.map((_,i)=>i));
+  const wrap = el("div", "opts" + (isTF || q.kind==="which" ? " three" : ""));
+  body.appendChild(wrap);
+  let selected = null;
+  const btns = [];
+  order.forEach(idx=>{
+    const b = el("button", "opt", opts[idx]);
+    b.onclick = ()=>{
+      selected = idx;
+      if(mode === "exam"){ btns.forEach(x=>x.b.classList.remove("sel")); b.classList.add("sel"); ctx.setReady(true); }
+      else ctx.evaluate();
+    };
+    btns.push({b, idx});
+    wrap.appendChild(b);
+  });
+  return {
+    needsButton:false,
+    check(mark){
+      const ok = selected === ans;
+      if(mark){ const bb = btns.find(x=>x.idx===selected).b; bb.classList.add(ok ? "right" : "wrong"); if(!ok) bb.disabled = true; }
+      return ok;
+    },
+    reveal(){ btns.find(x=>x.idx===ans).b.classList.add("right"); },
+    lock(){ btns.forEach(x=>x.b.disabled = true); },
+    answerText(){ return selected == null ? "(sin respuesta)" : strip(opts[selected]); }
+  };
+}
+
+function uiOrder(q, body, mode, ctx){
+  let cur = shuffle(q.items.map((_,i)=>i)), guard = 0;
+  while(cur.every((v,i)=>v===i) && guard++ < 20) cur = shuffle(cur);
+  let locked = false, marks = false, dragFrom = null;
+  body.appendChild(el("div", "muted small", "Usa las flechas ⬆️⬇️ (o arrastra con el mouse) para ponerlos en orden."));
+  const list = el("div", "order-list"); body.appendChild(list);
+  function mv(a, b){ [cur[a], cur[b]] = [cur[b], cur[a]]; marks = false; draw(); }
+  function draw(){
+    list.innerHTML = "";
+    cur.forEach((idx, pos)=>{
+      const it = el("div", "order-item" + (marks ? (idx===pos ? " right" : " wrong") : ""));
+      it.innerHTML = '<span class="onum">' + (pos+1) + '</span><span class="otxt">' + q.items[idx] + '</span>';
+      if(!locked){
+        it.draggable = true;
+        const ar = el("span", "oarrows");
+        const up = el("button", "arrow", "⬆️"); up.title = "Subir"; up.disabled = pos===0; up.onclick = ()=>mv(pos, pos-1);
+        const dn = el("button", "arrow", "⬇️"); dn.title = "Bajar"; dn.disabled = pos===cur.length-1; dn.onclick = ()=>mv(pos, pos+1);
+        ar.append(up, dn); it.appendChild(ar);
+        it.addEventListener("dragstart", e=>{ dragFrom = pos; try{ e.dataTransfer.setData("text/plain", "o"); }catch(_){} it.classList.add("dragging"); });
+        it.addEventListener("dragend", ()=>{ dragFrom = null; it.classList.remove("dragging"); });
+        it.addEventListener("dragover", e=>e.preventDefault());
+        it.addEventListener("drop", e=>{
+          e.preventDefault();
+          if(dragFrom !== null && dragFrom !== pos){ const [x] = cur.splice(dragFrom, 1); cur.splice(pos, 0, x); marks = false; draw(); }
+          dragFrom = null;
+        });
+      }
+      list.appendChild(it);
+    });
+  }
+  draw();
+  return {
+    needsButton:true,
+    wrongMsg:"Los que están en verde ya están en su lugar. Mueve los rojos.",
+    check(mark){ const ok = cur.every((v,i)=>v===i); if(mark){ marks = true; draw(); } return ok; },
+    reveal(){ cur = q.items.map((_,i)=>i); marks = true; draw(); },
+    lock(){ locked = true; draw(); },
+    answerText(){ return cur.map(i=>strip(q.items[i])).join(" → "); }
+  };
+}
+
+function uiDrag(q, body, mode, ctx){
+  const labels = shuffle(q.parts.map(p=>p[0]));
+  const placed = q.parts.map(()=>null);
+  const good = q.parts.map(()=>false);
+  let sel = null, locked = false;
+  body.appendChild(el("div", "muted small", "👉 Toca una etiqueta y luego toca el espacio ¿? donde va. (Con mouse también puedes arrastrarla.)"));
+  const bank = el("div", "bank"), slots = el("div", "");
+  body.append(bank, slots);
+  function place(label, i){
+    const prev = placed.indexOf(label);
+    if(prev > -1){ placed[prev] = null; good[prev] = false; }
+    placed[i] = label; good[i] = false; sel = null; draw();
+  }
+  function draw(){
+    bank.innerHTML = "";
+    const free = labels.filter(l=>!placed.includes(l));
+    if(!free.length) bank.appendChild(el("span", "muted small", locked ? "" : "✔️ Pusiste todas las etiquetas. ¡Ahora comprueba!"));
+    free.forEach(l=>{
+      const c = el("div", "chip" + (sel===l ? " sel" : ""), l);
+      c.setAttribute("role","button"); c.tabIndex = 0;
+      if(!locked){
+        c.draggable = true;
+        c.onclick = ()=>{ sel = (sel===l) ? null : l; draw(); };
+        c.addEventListener("dragstart", e=>{ try{ e.dataTransfer.setData("text/plain", l); }catch(_){} });
+      }
+      bank.appendChild(c);
+    });
+    slots.innerHTML = "";
+    q.parts.forEach((p, i)=>{
+      const row = el("div", "slot");
+      const d = el("div", "drop" + (placed[i] ? " filled" : "") + (good[i] ? " right" : "") + (sel && !placed[i] ? " ready" : ""), placed[i] ? (good[i] ? "✔️ " : "") + placed[i] : "¿?");
+      d.setAttribute("role","button"); d.tabIndex = 0;
+      if(!locked){
+        d.onclick = ()=>{
+          if(sel) place(sel, i);
+          else if(placed[i]){ placed[i] = null; good[i] = false; draw(); }
+        };
+        d.addEventListener("dragover", e=>{ e.preventDefault(); d.classList.add("over"); });
+        d.addEventListener("dragleave", ()=>d.classList.remove("over"));
+        d.addEventListener("drop", e=>{ e.preventDefault(); const l = e.dataTransfer.getData("text/plain"); if(labels.includes(l)) place(l, i); });
+      }
+      row.append(d, el("div", "frag", p[1]));
+      slots.appendChild(row);
+    });
+  }
+  draw();
+  return {
+    needsButton:true,
+    wrongMsg:"Las etiquetas en verde están bien. Las otras volvieron a la bandeja: ¡ubícalas de nuevo!",
+    isComplete(){ return placed.every(x=>x); },
+    check(mark){
+      const ok = placed.every((l,i)=>l===q.parts[i][0]);
+      if(mark){ placed.forEach((l,i)=>{ if(l===q.parts[i][0]) good[i] = true; else { placed[i] = null; good[i] = false; } }); draw(); }
+      return ok;
+    },
+    reveal(){ q.parts.forEach((p,i)=>{ placed[i] = p[0]; good[i] = true; }); draw(); },
+    lock(){ locked = true; sel = null; draw(); },
+    answerText(){ return "(etiquetas en lugares equivocados)"; }
+  };
+}
+
+function renderQuestion(q, box, mode, cb){
+  box.innerHTML = "";
+  const card = el("div", "qcard");
+  const kind = KIND[q.kind || q.type];
+  let head = '<div class="qtag">' + kind + '</div>';
+  if(q.passage) head += '<div class="passage">' + q.passage + '</div>';
+  head += q.type === "tf" ? '<div class="qtext">¿Verdadero o falso?</div><div class="statement">' + q.q + '</div><div style="height:12px"></div>' : '<div class="qtext">' + q.q + '</div>';
+  card.innerHTML = head;
+  const body = el("div", ""), fb = el("div", "feedback"), actions = el("div", "qactions");
+  card.append(body, fb, actions);
+  box.appendChild(card);
+
+  let attempts = 0, finished = false, mainBtn = null, revealShown = false;
+  const ctx = { evaluate:()=>evaluate(), setReady:v=>{ if(mainBtn) mainBtn.disabled = !v; } };
+  const ui = (q.type === "order" ? uiOrder : q.type === "drag" ? uiDrag : uiChoice)(q, body, mode, ctx);
+
+  if(ui.needsButton || mode === "exam"){
+    mainBtn = el("button", "btn", mode === "exam" ? "Responder y seguir ➡️" : "Comprobar ✔️");
+    if(mode === "exam" && !ui.needsButton) mainBtn.disabled = true;
+    mainBtn.onclick = evaluate;
+    actions.appendChild(mainBtn);
+  }
+  function showFb(ok, title, text){
+    fb.className = "feedback " + (ok ? "good" : "bad");
+    fb.innerHTML = '<div class="fbt">' + title + '</div><div>' + text + '</div>';
+  }
+  function nextButton(){
+    actions.innerHTML = "";
+    const n = el("button", "btn green", "Siguiente ➡️");
+    n.onclick = ()=>cb.onNext();
+    actions.appendChild(n);
+    setTimeout(()=>{ fb.scrollIntoView({behavior:"smooth", block:"center"}); n.focus({preventScroll:true}); }, 50);
+  }
+  function evaluate(){
+    if(finished) return;
+    if(ui.isComplete && !ui.isComplete()){ toast("Primero ubica todas las etiquetas 😉"); return; }
+    attempts++;
+    const ok = ui.check(mode !== "exam");
+    if(mode === "exam"){ finished = true; ui.lock(); cb.onAnswer(ok, true, ui.answerText()); cb.onNext(); return; }
+    if(ok){
+      finished = true; ui.lock();
+      const pts = mode === "practice" ? (attempts === 1 ? 10 : 5) : 10;
+      showFb(true, cheer() + ' <span class="small">+' + pts + ' ⭐' + (mode === "practice" && attempts === 1 ? " (¡al primer intento!)" : "") + '</span>', "💬 " + expOf(q));
+      cb.onAnswer(true, attempts === 1, pts);
+      nextButton();
+    } else if(mode === "practice"){
+      showFb(false, "Casi… ¡inténtalo otra vez! 💪", (ui.wrongMsg ? ui.wrongMsg + "<br>" : "") + (q.hint ? "💡 <b>Pista:</b> " + q.hint : ""));
+      if(attempts >= 2 && !revealShown && ui.needsButton){
+        revealShown = true;
+        const r = el("button", "btn secondary", "👀 Ver la respuesta");
+        r.onclick = ()=>{
+          finished = true; ui.reveal(); ui.lock();
+          showFb(false, "Así era la respuesta correcta 👇", "💬 " + expOf(q) + "<br><span class='small muted'>(Esta vez sin puntos. ¡La próxima te sale!)</span>");
+          cb.onAnswer(false, false, 0); nextButton();
+        };
+        actions.appendChild(r);
+      }
+    } else {
+      finished = true; ui.reveal(); ui.lock();
+      showFb(false, "Esta vez no 😅", "La respuesta correcta está marcada en verde.<br>💬 " + expOf(q));
+      cb.onAnswer(false, false, 0);
+      nextButton();
+    }
+  }
+}
+
+/* =========================================================
+   PANTALLA DE INICIO
+   ========================================================= */
+function countdownText(){
+  const now = new Date(); now.setHours(0,0,0,0);
+  const test = new Date(2026, 8, 29);
+  const d = Math.round((test - now) / 86400000);
+  if(d > 1) return "📅 ¡Faltan " + d + " días para tu prueba (martes 29 de septiembre)! 💪";
+  if(d === 1) return "📅 ¡Mañana es la prueba! Hoy termina las misiones y la prueba final. 💪";
+  if(d === 0) return "🍀 ¡Hoy es la prueba! Repasa la Hoja resumen y confía en ti.";
+  return "📅 Prueba de Lenguaje: martes 29 de septiembre";
+}
+function stageChip(ok, text){ return '<span class="chipst' + (ok ? " ok" : "") + '">' + (ok ? "✅ " : "⬜ ") + text + '</span>'; }
+function renderHome(){
+  const done = STEPS.filter(s=>S.done[s]).length;
+  const pct = Math.round(done / STEPS.length * 100);
+  const medalsHtml = Object.keys(MEDALS).map(k=>'<div class="medal ' + (S.medals[k] ? "on" : "off") + '"><span class="mi">' + MEDALS[k].icon + '</span>' + MEDALS[k].name + '</div>').join("");
+  const mcard = (mid)=>{
+    const m = MISSIONS[mid];
+    return '<button class="mcard c-' + m.color + '" onclick="openMission(\'' + mid + '\')"><span class="mic">' + m.icon + '</span> <span class="mt1">Misión ' + m.num + ': ' + m.title + '</span>'
+      + '<div class="chips">' + stageChip(S.done[mid+"a"], "Aprende") + stageChip(S.done[mid+"b"], "Practica") + stageChip(S.done[mid+"c"], "Desafío " + MEDALS[mid].icon) + '</div></button>';
+  };
+  const wd = ["w1","w2","w3"].filter(w=>S.writeDone[w]).length;
+  const planItem = (ok, text)=>'<li class="' + (ok ? "ok" : "") + '">' + (ok ? "✅ " : "⬜ ") + text + '</li>';
+  const allM = m=>S.done[m+"a"] && S.done[m+"b"] && S.done[m+"c"];
+  $("#home").innerHTML = `
+  <div class="card hero">
+    <div class="hero-emoji">📰🔬🛠️</div>
+    <h1>Misión Textos: ¡Agente Secreto de la Lectura! 🕵️</h1>
+    <p class="big">Aprende a reconocer el <b>reportaje</b>, el <b>artículo informativo</b> y el <b>manual de instrucciones</b>. Completa las misiones, suma puntos y gana medallas.</p>
+    <p class="countdown">${countdownText()}</p>
+  </div>
+  <div class="card">
+    <h2>📊 Tu progreso</h2>
+    <div class="progress"><div style="width:${pct}%"></div></div>
+    <p><b>${done} de ${STEPS.length}</b> etapas completadas (${pct}%) · ⭐ <b>${S.points}</b> puntos${S.bestGrade != null ? " · 🏆 Mejor nota en la prueba: <b>" + fmtGrade(S.bestGrade) + "</b>" : ""}</p>
+    <h3>🏅 Tus medallas</h3>
+    <div class="medals">${medalsHtml}</div>
+  </div>
+  <h2>🗺️ Mapa de misiones</h2>
+  <div class="map">
+    ${mcard("m1")}${mcard("m2")}${mcard("m3")}
+    <button class="mcard c-cmp" onclick="openCompare()"><span class="mic">🤔</span> <span class="mt1">Misión 4: ¿Qué texto es?</span><div class="chips">${stageChip(S.done.m4, "Juego de 12 rondas " + MEDALS.m4.icon)}</div></button>
+    <button class="mcard c-esc" onclick="openWrite()"><span class="mic">✍️</span> <span class="mt1">Misión 5: Escribe tú</span><div class="chips">${stageChip(S.done.m5, "Actividades " + wd + "/3")}</div></button>
+    <button class="mcard c-fin" onclick="openFinal()"><span class="mic">📝</span> <span class="mt1">Prueba final (simulacro)</span><div class="chips">${stageChip(S.done.final, S.lastGrade != null ? "Última nota: " + fmtGrade(S.lastGrade) : "20 preguntas")}</div></button>
+    <button class="mcard c-sum" onclick="openSummary()"><span class="mic">📋</span> <span class="mt1">Hoja resumen</span><div class="chips">${stageChip(S.done.resumen, "Para repasar e imprimir")}</div></button>
+  </div>
+  <div class="card plan">
+    <h2>📆 Plan de estudio sugerido</h2>
+    <ul>
+      ${planItem(allM("m1"), "<b>Sábado 26:</b> Misión 1 (Reportaje) 📰")}
+      ${planItem(allM("m2"), "<b>Domingo 27:</b> Misión 2 (Artículo informativo) 🔬")}
+      ${planItem(allM("m3") && S.done.m4 && S.done.final, "<b>Lunes 28:</b> Misión 3 (Manual de instrucciones) 🛠️ + Misión 4 (Comparar) 🤔 + Prueba final 📝")}
+      ${planItem(S.done.resumen, "<b>Martes 29:</b> repasar solo la Hoja resumen 📋 antes de la prueba")}
+    </ul>
+    <p class="small muted">💡 La Misión 5 (Escribe tú) es un gran extra si te queda tiempo el domingo o el lunes.</p>
+  </div>
+  <div class="center"><button class="btn secondary" onclick="resetProgress()">🔄 Reiniciar progreso</button></div>`;
+}
+
+/* =========================================================
+   MISIONES 1-3
+   ========================================================= */
+let curMission = "m1", learnPage = 1;
+function openMission(mid, tab){
+  curMission = mid;
+  const t = tab || (!S.done[mid+"a"] ? "learn" : !S.done[mid+"b"] ? "practice" : "challenge");
+  show("screen-mission");
+  renderMission(t);
+}
+function renderMission(tab){
+  const mid = curMission, m = MISSIONS[mid];
+  const tb = (id, label, step)=>'<button class="tab' + (tab===id ? " on" : "") + '" onclick="renderMission(\'' + id + '\')">' + (S.done[step] ? "✅ " : "") + label + '</button>';
+  $("#mission").innerHTML = `
+    <div class="c-${m.color}">
+      <div class="mhead"><span class="micon">${m.icon}</span><div><div class="small muted">Misión ${m.num}</div><h1>${m.title}</h1></div></div>
+      <div class="tabs">${tb("learn","📖 A) Aprende",mid+"a")}${tb("practice","💪 B) Practica",mid+"b")}${tb("challenge","🏁 C) Desafío final",mid+"c")}</div>
+      <div id="mbody"></div>
+    </div>`;
+  window.scrollTo(0,0);
+  if(tab === "learn"){ learnPage = 1; renderLearn(); }
+  else if(tab === "practice") renderPracticeIntro();
+  else renderChallengeIntro();
+}
+function renderLearn(){
+  const mid = curMission, m = MISSIONS[mid];
+  const b = $("#mbody");
+  if(learnPage === 1){
+    const parts = m.example.map((p,i)=>'<div class="part pc' + p.c + '" data-i="' + i + '" title="' + strip(p.e).replace(/"/g,"") + '"><span class="plabel">' + p.l + '</span><div>' + p.h + '</div></div>').join("");
+    b.innerHTML = `
+      <div class="card"><h2>🎯 ¿Para qué sirve?</h2>${m.purpose}</div>
+      <div class="card"><h2>🧩 Sus partes</h2>
+        <p>👆 <b>Toca o pasa el mouse</b> por cada parte de colores para ver qué es.</p>
+        <div class="example" id="example">${parts}
+          <div class="explain" id="explain">👉 Elige una parte de colores para ver su explicación.</div>
+        </div>
+      </div>
+      <div class="row center"><span class="muted">Pantalla 1 de 2</span><button class="btn" onclick="learnPage=2;renderLearn();window.scrollTo(0,0)">Siguiente pantalla ➡️</button></div>`;
+    b.querySelectorAll(".part").forEach(pe=>{
+      const setIt = ()=>{
+        b.querySelectorAll(".part").forEach(x=>x.classList.remove("activep"));
+        pe.classList.add("activep");
+        $("#explain").innerHTML = "🏷️ " + m.example[+pe.dataset.i].e;
+      };
+      pe.addEventListener("mouseenter", setIt);
+      pe.addEventListener("click", setIt);
+    });
+  } else {
+    b.innerHTML = `
+      <div class="card"><h2>✨ Sus características</h2>${m.features}</div>
+      <div class="card">${m.trick}</div>
+      <div class="row center"><button class="btn secondary" onclick="learnPage=1;renderLearn();window.scrollTo(0,0)">⬅️ Volver</button>
+      <button class="btn green" onclick="finishLearn()">¡Lo entendí! Ir a practicar ✅</button></div>`;
+  }
+}
+function finishLearn(){
+  const mid = curMission;
+  markDone(mid+"a");
+  if(!S.learnPts[mid]){ S.learnPts[mid] = true; save(); addPoints(20); }
+  renderMission("practice");
+}
+function renderPracticeIntro(){
+  const m = MISSIONS[curMission];
+  $("#mbody").innerHTML = `<div class="card center">
+    <h2>💪 Práctica: ${m.practice.length} ejercicios</h2>
+    <p>Selección múltiple, verdadero o falso, arrastrar etiquetas, ordenar, detective de errores, completar y comprensión.</p>
+    <p>⭐ <b>10 puntos</b> si aciertas al primer intento · <b>5 puntos</b> si aciertas después.<br>💡 Si te equivocas, te doy una pista y lo intentas otra vez.</p>
+    <p class="small muted">Las preguntas y alternativas se mezclan cada vez.</p>
+    <button class="btn" onclick="startPractice()">¡Empezar práctica! 🚀</button></div>`;
+}
+function startPractice(){
+  const m = MISSIONS[curMission];
+  const sess = {queue: shuffle(m.practice), i:0, first:0, correct:0, pts:0};
+  const step = ()=>{
+    const n = sess.queue.length;
+    if(sess.i >= n) return endPractice(sess);
+    $("#mbody").innerHTML = `<div class="qhead"><span>Ejercicio ${sess.i+1} de ${n}</span><span>⭐ +${sess.pts} en esta práctica</span></div>
+      <div class="progress thin"><div style="width:${Math.round(sess.i/n*100)}%"></div></div>
+      <div id="qbox"></div>
+      <div class="center"><button class="linkbtn" onclick="renderMission('practice')">Salir de la práctica</button></div>`;
+    renderQuestion(sess.queue[sess.i], $("#qbox"), "practice", {
+      onAnswer(ok, first, pts){ if(ok){ sess.correct++; if(first) sess.first++; sess.pts += pts; addPoints(pts); } },
+      onNext(){ sess.i++; step(); window.scrollTo(0,0); }
+    });
+  };
+  step();
+}
+function endPractice(sess){
+  markDone(curMission+"b");
+  $("#mbody").innerHTML = `<div class="card center">
+    <div style="font-size:3.5rem">🎉</div>
+    <h2>¡Terminaste la práctica!</h2>
+    <p class="big">Acertaste <b>${sess.first}</b> de ${sess.queue.length} al primer intento y ganaste <b>${sess.pts} ⭐</b>.</p>
+    <div class="row center">
+      <button class="btn secondary" onclick="startPractice()">🔁 Practicar otra vez (mezclado)</button>
+      <button class="btn green" onclick="renderMission('challenge')">🏁 Ir al Desafío final</button>
+    </div></div>`;
+}
+function renderChallengeIntro(){
+  const mid = curMission, md = MEDALS[mid];
+  $("#mbody").innerHTML = `<div class="card center">
+    <h2>🏁 Desafío final de la misión</h2>
+    <p class="big">5 preguntas seguidas, <b>sin pistas</b> y con un solo intento.</p>
+    <p>Si sacas <b>4 o 5 buenas</b>, ganas la medalla:</p>
+    <div style="font-size:4rem">${md.icon}</div><p class="big"><b>${md.name}</b> ${S.medals[mid] ? "(¡ya la tienes! ✅)" : ""}</p>
+    <button class="btn" onclick="startChallenge()">¡Acepto el desafío! 💥</button></div>`;
+}
+function startChallenge(){
+  const mid = curMission;
+  const qs = shuffle(MISSIONS[mid].challenge).slice(0,5);
+  let i = 0, score = 0;
+  const step = ()=>{
+    if(i >= qs.length) return endChallenge(score);
+    $("#mbody").innerHTML = `<div class="qhead"><span>Desafío: pregunta ${i+1} de 5</span><span>✅ ${score} buenas</span></div>
+      <div class="progress thin"><div style="width:${i*20}%"></div></div><div id="qbox"></div>`;
+    renderQuestion(qs[i], $("#qbox"), "challenge", {
+      onAnswer(ok){ if(ok){ score++; addPoints(10); } },
+      onNext(){ i++; step(); window.scrollTo(0,0); }
+    });
+  };
+  step();
+}
+function endChallenge(score){
+  const mid = curMission, pass = score >= 4;
+  if(pass) markDone(mid+"c");
+  $("#mbody").innerHTML = `<div class="card center">
+    <div style="font-size:3.5rem">${pass ? MEDALS[mid].icon : "💪"}</div>
+    <h2>${pass ? "¡Desafío superado!" : "¡Casi! Te faltó poquito"}</h2>
+    <p class="big">Sacaste <b>${score} de 5</b>.</p>
+    <p>${pass ? "¡Eres un experto en este texto!" : "Necesitas 4 o 5 buenas. Repasa “Aprende” o haz la práctica otra vez, y vuelve a intentarlo."}</p>
+    <div class="row center">
+      <button class="btn secondary" onclick="startChallenge()">🔁 Intentar otra vez</button>
+      ${pass ? '<button class="btn green" onclick="goHome()">🗺️ Volver al mapa</button>' : '<button class="btn" onclick="renderMission(\'learn\')">📖 Repasar Aprende</button>'}
+    </div></div>`;
+  if(pass) giveMedal(mid);
+}
+
+/* =========================================================
+   MISIÓN 4: COMPARAR
+   ========================================================= */
+function openCompare(){ show("screen-compare"); renderCompare(); }
+function renderCompare(){
+  $("#compare").innerHTML = `
+  <div class="c-cmp">
+    <div class="mhead"><span class="micon">🤔</span><div><div class="small muted">Misión 4</div><h1>¿Qué texto es?</h1></div></div>
+    <div class="card"><h2>📊 Tabla comparativa</h2>
+    <div class="tablewrap"><table class="cmp">
+      <thead><tr><th></th><th>📰 Reportaje</th><th>🔬 Artículo informativo</th><th>🛠️ Manual de instrucciones</th></tr></thead>
+      <tbody>
+      <tr><th>🎯 Propósito</th><td>Investigar y profundizar un tema de interés</td><td>Informar o explicar un tema de forma clara y objetiva</td><td>Enseñar a hacer o usar algo paso a paso</td></tr>
+      <tr><th>🧩 Partes</th><td>Título, bajada, lead, cuerpo y cierre</td><td>Título, introducción, desarrollo y conclusión</td><td>Título u objetivo, materiales, pasos, imágenes y advertencias</td></tr>
+      <tr><th>🗣️ Lenguaje</th><td>Periodístico; puede mostrar el estilo del periodista; usa citas de personas</td><td>Formal, preciso, objetivo, en 3.ª persona y sin opiniones</td><td>Claro y breve; verbos en imperativo o infinitivo; conectores de orden</td></tr>
+      <tr><th>🧰 Recursos</th><td>Entrevistas, testimonios, datos, fotos con pie de foto, subtítulos</td><td>Subtítulos, imágenes, infografías, tablas, glosario y fuentes</td><td>Números, viñetas, ilustraciones y símbolo ⚠️</td></tr>
+      <tr><th>📍 Dónde está</th><td>Diarios, revistas, TV, sitios de noticias</td><td>Enciclopedias, textos escolares, revistas de ciencia</td><td>Cajas de juguetes, recetas, aparatos, juegos de mesa</td></tr>
+      <tr><th>❓ Pregunta clave</th><td>¿Qué investigó el periodista?</td><td>¿Qué me explica?</td><td>¿Cómo lo hago?</td></tr>
+      </tbody></table></div>
+    <p class="small muted">↔️ En pantallas pequeñas, desliza la tabla hacia el lado.</p>
+    </div>
+    <div class="card"><h2>🔍 Reportaje vs. artículo informativo: 3 pistas</h2>
+      <ul class="feat">
+        <li>1️⃣ ¿Hay <b>personas entrevistadas</b> con sus palabras <b>entre comillas</b>? → Probablemente es un <b>reportaje</b>.</li>
+        <li>2️⃣ ¿El periodista <b>cuenta lo que vio o hizo</b> (“viajamos”, “llegamos”, “nos recibe”)? → <b>Reportaje</b>.</li>
+        <li>3️⃣ ¿Explica <b>como una enciclopedia</b>, con definiciones, datos generales y a veces glosario, sin opinar? → <b>Artículo informativo</b>.</li>
+      </ul>
+    </div>
+    <div class="card center" id="gameBox">
+      <h2>🎮 Juego rápido: ¿Qué texto es?</h2>
+      <p class="big">12 rondas. Lee el fragmento y decide si es <b>reportaje</b>, <b>artículo informativo</b> o <b>manual de instrucciones</b>.</p>
+      <p>Si aciertas <b>10 o más</b>, ganas la medalla ${MEDALS.m4.icon} <b>${MEDALS.m4.name}</b> ${S.medals.m4 ? "(¡ya la tienes! ✅)" : ""}</p>
+      <button class="btn" onclick="startGame()">¡Jugar! 🎲</button>
+    </div>
+  </div>`;
+}
+function startGame(){
+  const rounds = shuffle(ROUNDS).slice(0,12);
+  let i = 0, score = 0;
+  const box = $("#gameBox");
+  box.classList.remove("center");
+  const step = ()=>{
+    if(i >= rounds.length) return end();
+    box.innerHTML = `<div class="qhead"><span>Ronda ${i+1} de 12</span><span>✅ ${score} buenas</span></div>
+      <div class="progress thin"><div style="width:${Math.round(i/12*100)}%"></div></div><div id="gq"></div>`;
+    renderQuestion(rounds[i], $("#gq"), "challenge", {
+      onAnswer(ok){ if(ok){ score++; addPoints(10); } },
+      onNext(){ i++; step(); box.scrollIntoView({behavior:"smooth"}); }
+    });
+  };
+  const end = ()=>{
+    markDone("m4");
+    const pass = score >= 10;
+    box.classList.add("center");
+    box.innerHTML = `<div style="font-size:3.5rem">${pass ? MEDALS.m4.icon : "💪"}</div>
+      <h2>${pass ? "¡Eres un Detective de Textos!" : "¡Buen intento!"}</h2>
+      <p class="big">Acertaste <b>${score} de 12</b>.</p>
+      <p>${pass ? "Distingues muy bien los tres textos. 👏" : "Necesitas 10 o más para la medalla. Revisa la tabla y las 3 pistas, y juega otra vez."}</p>
+      <div class="row center"><button class="btn secondary" onclick="startGame()">🔁 Jugar otra vez</button><button class="btn green" onclick="goHome()">🗺️ Volver al mapa</button></div>`;
+    if(pass) giveMedal("m4");
+  };
+  step();
+}
+
+/* =========================================================
+   MISIÓN 5: ESCRIBE TÚ
+   ========================================================= */
+const OPINION_RE = /(^|[^a-záéíóúüñ])(yo|creo|me encanta|me encantan|me gusta|me gustan|pienso|opino|mi opinión|lo mejor|lo peor|bacán|feo|feos|lindo|lindos|aburrido)(?=$|[^a-záéíóúüñ])/i;
+const WRITES = [
+ {id:"w1", icon:"📰", title:"Actividad 1: Comienzo de un reportaje",
+  task:"Imagina que eres periodista. Investigaste el tema <b>“Los perros comunitarios que viven en el patio de nuestro colegio”</b>. Escribe el <b>título</b>, la <b>bajada</b> y el <b>lead</b> de tu reportaje.",
+  tips:["📌 <b>Título:</b> corto y llamativo.","📝 <b>Bajada:</b> 1 o 2 oraciones que resumen de qué trata. Puedes usar “investigamos”, “conocimos”.","🎣 <b>Lead:</b> un primer párrafo que enganche: describe una escena, cuenta un dato curioso o haz una pregunta."],
+  fields:[{id:"titulo",label:"📌 Título",rows:1},{id:"bajada",label:"📝 Bajada",rows:3},{id:"lead",label:"🎣 Lead o entrada",rows:5}],
+  checklist:["Mi título es corto y llama la atención.","Mi título tiene relación con el tema.","Mi bajada va debajo del título y resume de qué trata el reportaje.","Mi bajada tiene 1 o 2 oraciones.","Mi lead engancha: describe una escena, da un dato curioso o hace una pregunta.","Revisé mayúsculas, puntos y ortografía."],
+  model:"📌 Cuatro patas y mucho corazón: los perros guardianes del colegio\n\n📝 Negrita, Canela y Tobías viven en el patio de nuestra escuela desde hace tres años. Investigamos quién los cuida y por qué todos los quieren tanto.\n\n🎣 Suena el timbre del recreo y, antes que cualquier estudiante, Negrita ya está en la puerta de la sala moviendo la cola. Sabe que a esa hora llegan las caricias… y, con suerte, un pedacito de pan.",
+  auto(v){ const o = []; if(v.titulo && v.titulo.split(/\s+/).filter(Boolean).length > 14) o.push("Tu título es un poco largo. ¡Intenta que sea más corto y llamativo!"); if(v.bajada && (v.bajada.match(/[.!?]/g)||[]).length > 3) o.push("Tu bajada parece larga: la bajada debe ser breve (1 o 2 oraciones)."); return o; }},
+ {id:"w2", icon:"🔬", title:"Actividad 2: Introducción de un artículo informativo",
+  task:"Escribe el <b>título</b> y la <b>introducción</b> de un artículo informativo sobre <b>los dinosaurios</b> 🦖.",
+  tips:["Presenta el tema: ¿qué eran los dinosaurios?","Despierta el interés con un dato curioso o una pregunta.","Adelanta lo que se explicará en el artículo.","Escribe en <b>tercera persona</b> y <b>sin opiniones</b> (nada de “yo creo” o “me encanta”)."],
+  fields:[{id:"titulo",label:"🧪 Título",rows:1},{id:"intro",label:"📝 Introducción",rows:6}],
+  checklist:["Presenté el tema (dije de qué trata el artículo).","Usé un dato interesante o una pregunta para despertar el interés.","Adelanté lo que se va a explicar en el artículo.","Escribí en tercera persona (no usé “yo”, “me”, “mi”).","No di opiniones (no usé “creo que”, “me encanta”, “es lo mejor”).","Usé palabras precisas y formales."],
+  model:"🧪 Los dinosaurios: gigantes del pasado\n\n📝 Los dinosaurios fueron reptiles que habitaron la Tierra durante millones de años, mucho antes de que existieran los seres humanos. Algunos eran más altos que un edificio de tres pisos y otros eran del tamaño de una gallina. ¿Cómo eran, qué comían y por qué desaparecieron? A continuación, se explican las respuestas a estas preguntas.",
+  auto(v){ const o = []; const t = (v.titulo||"") + " " + (v.intro||""); const m = t.match(OPINION_RE); if(m) o.push("Encontré la palabra “" + m[2] + "”. ¿Es una opinión o una palabra en primera persona? En un artículo informativo no se opina."); return o; }},
+ {id:"w3", icon:"🛠️", title:"Actividad 3: Instructivo “Cómo preparar un sándwich”",
+  task:"Escribe un instructivo corto: <b>“Cómo preparar un sándwich”</b> 🥪 (¡tú eliges de qué!). Debe tener título, materiales, <b>al menos 4 pasos</b> y una advertencia.",
+  tips:["Escribe un paso por línea y numéralos (1., 2., 3., 4.).","Usa verbos en imperativo (corta, unta, pon) o infinitivo (cortar, untar, poner).","Usa conectores de orden: primero, luego, después, finalmente.","No olvides la advertencia ⚠️."],
+  fields:[{id:"titulo",label:"🎯 Título u objetivo",rows:1},{id:"mat",label:"🧺 Materiales o ingredientes",rows:3},{id:"pasos",label:"🔢 Pasos (uno por línea, mínimo 4)",rows:7},{id:"adv",label:"⚠️ Advertencia o precaución",rows:2}],
+  checklist:["Tiene un título que dice qué se va a lograr.","Tiene la lista de materiales o ingredientes.","Tiene al menos 4 pasos numerados.","Los pasos están en el orden correcto.","Usé verbos en imperativo (corta, unta) o infinitivo (cortar, untar).","Usé conectores de orden (primero, luego, después, finalmente).","Tiene al menos una advertencia o precaución."],
+  model:"🎯 Cómo preparar un sándwich de palta y tomate 🥪\n\n🧺 Ingredientes y materiales: 2 rebanadas de pan de molde, 1/2 palta, 1 tomate, sal, un plato, una cuchara y un cuchillo sin punta.\n\n🔢 Pasos:\n1. Primero, lávate las manos con agua y jabón.\n2. Luego, lava el tomate y córtalo en rodajas con ayuda de un adulto.\n3. Después, saca la palta con la cuchara y muélela sobre una rebanada de pan.\n4. A continuación, pon las rodajas de tomate sobre la palta y agrega una pizca de sal.\n5. Finalmente, tapa con la otra rebanada de pan. ¡A disfrutar!\n\n⚠️ Precaución: pide ayuda a un adulto para usar el cuchillo y lava bien las verduras antes de comerlas.",
+  auto(v){
+    const o = []; const lines = (v.pasos||"").split("\n").filter(l=>l.trim());
+    if(lines.length < 4) o.push("Conté " + lines.length + " paso(s). ¡Necesitas al menos 4! (Escribe un paso por línea.)");
+    else o.push("✔ Conté " + lines.length + " pasos. ¡Bien!");
+    if(!/(primero|luego|después|despues|finalmente|a continuación|por último)/i.test(v.pasos||"")) o.push("No encontré conectores de orden (primero, luego, después, finalmente). ¡Agrégalos!");
+    return o;
+  }}
+];
+let curWrite = "w1";
+function openWrite(){ show("screen-write"); renderWrite(); }
+function renderWrite(){
+  const w = WRITES.find(x=>x.id===curWrite);
+  const draft = S.drafts[w.id] || {};
+  const tabs = WRITES.map(x=>'<button class="tab' + (x.id===curWrite ? " on" : "") + '" onclick="curWrite=\'' + x.id + '\';renderWrite()">' + (S.writeDone[x.id] ? "✅ " : "") + x.icon + " " + x.title.split(":")[0] + '</button>').join("");
+  const fields = w.fields.map(f=>'<label class="fl" for="f_' + f.id + '">' + f.label + '</label><textarea id="f_' + f.id + '" rows="' + f.rows + '" data-f="' + f.id + '"></textarea>').join("");
+  $("#write").innerHTML = `
+  <div class="c-esc">
+    <div class="mhead"><span class="micon">✍️</span><div><div class="small muted">Misión 5</div><h1>Escribe tú</h1></div></div>
+    <div class="tabs">${tabs}</div>
+    <div class="card">
+      <h2>${w.icon} ${w.title}</h2>
+      <p class="big">${w.task}</p>
+      <div class="box tip"><b>💡 Consejos:</b><br>${w.tips.join("<br>")}</div>
+      ${fields}
+      <div class="row mt"><button class="btn" id="btnCheck">✅ Terminé: revisar mi texto</button><button class="btn secondary" id="btnClear">🧹 Borrar y empezar de nuevo</button></div>
+      <p class="small muted">💾 Lo que escribes se guarda solo.</p>
+    </div>
+    <div id="wcheck"></div>
+  </div>`;
+  w.fields.forEach(f=>{
+    const ta = document.getElementById("f_" + f.id);
+    ta.value = draft[f.id] || "";
+    ta.addEventListener("input", ()=>{ S.drafts[w.id] = S.drafts[w.id] || {}; S.drafts[w.id][f.id] = ta.value; save(); });
+  });
+  $("#btnClear").onclick = ()=>{ if(confirm("¿Borrar lo que escribiste en esta actividad?")){ S.drafts[w.id] = {}; save(); renderWrite(); } };
+  $("#btnCheck").onclick = ()=>showChecklist(w);
+}
+function showChecklist(w){
+  const v = S.drafts[w.id] || {};
+  const empty = w.fields.filter(f=>!(v[f.id]||"").trim());
+  if(empty.length === w.fields.length){ toast("Primero escribe tu texto ✏️"); return; }
+  let notes = empty.map(f=>'<div class="warn">✏️ Te falta escribir: <b>' + strip(f.label) + '</b></div>').join("");
+  notes += w.auto(v).map(t=>'<div class="' + (t.startsWith("✔") ? "goodnote" : "warn") + '">🤖 ' + t + '</div>').join("");
+  const checks = w.checklist.map((c,i)=>'<label class="check"><input type="checkbox" class="ck"> <span>' + c + '</span></label>').join("");
+  $("#wcheck").innerHTML = `<div class="card">
+    <h2>📋 Lista de cotejo</h2>
+    ${notes ? '<h3>Algunas observaciones automáticas:</h3>' + notes : ""}
+    <p>Relee tu texto y <b>marca cada casilla</b> si tu texto lo cumple. Si algo falta, ¡arréglalo arriba!</p>
+    ${checks}
+    <p id="ckCount" class="muted"></p>
+    <button class="btn green" id="btnModel">👀 Ver ejemplo modelo para comparar</button>
+    <div id="modelBox"></div>
+  </div>`;
+  const upd = ()=>{ const all = document.querySelectorAll(".ck"), n = [...all].filter(c=>c.checked).length; $("#ckCount").textContent = "Marcaste " + n + " de " + all.length + (n===all.length ? " ¡Perfecto! 🌟" : ""); };
+  document.querySelectorAll(".ck").forEach(c=>c.addEventListener("change", upd)); upd();
+  $("#btnModel").onclick = ()=>{
+    $("#modelBox").innerHTML = '<h3>🌟 Ejemplo modelo</h3><div class="model">' + w.model + '</div><p class="small muted">No tiene que ser igual al tuyo: compara si el tuyo tiene las mismas partes.</p><div class="row"><button class="btn secondary" onclick="window.scrollTo(0,0)">⬆️ Mejorar mi texto</button>' + (nextWriteId(w.id) ? '<button class="btn" onclick="curWrite=\'' + nextWriteId(w.id) + '\';renderWrite();window.scrollTo(0,0)">Siguiente actividad ➡️</button>' : '<button class="btn green" onclick="goHome()">🗺️ Volver al mapa</button>') + '</div>';
+    if(!S.writeDone[w.id]){
+      S.writeDone[w.id] = true; save(); addPoints(30);
+      if(WRITES.every(x=>S.writeDone[x.id])){ markDone("m5"); giveMedal("m5"); }
+    }
+  };
+  $("#wcheck").scrollIntoView({behavior:"smooth"});
+}
+function nextWriteId(id){ const i = WRITES.findIndex(x=>x.id===id); return WRITES[i+1] ? WRITES[i+1].id : null; }
+
+/* =========================================================
+   PRUEBA FINAL
+   ========================================================= */
+let timerId = null, timerSec = 0;
+function startTimer(){ stopTimer(); timerId = setInterval(()=>{ timerSec++; drawTimer(); }, 1000); }
+function stopTimer(){ if(timerId) clearInterval(timerId); timerId = null; }
+function drawTimer(){
+  const t = document.getElementById("timer"); if(!t) return;
+  const mm = String(Math.floor(timerSec/60)).padStart(2,"0"), ss = String(timerSec%60).padStart(2,"0");
+  t.textContent = "⏱️ " + mm + ":" + ss;
+  t.style.display = S.timerOn ? "" : "none";
+}
+function toggleTimer(){
+  S.timerOn = !S.timerOn; save();
+  if(S.timerOn) startTimer(); else stopTimer();
+  drawTimer();
+  const b = document.getElementById("timerBtn"); if(b) b.textContent = S.timerOn ? "⏸️ Apagar cronómetro" : "▶️ Encender cronómetro";
+}
+function calcGrade(p, max){
+  const e = 0.6 * max;
+  const n = p < e ? 1 + 3 * p / e : 4 + 3 * (p - e) / (max - e);
+  return Math.round(n * 10) / 10;
+}
+function fmtGrade(n){ return n.toFixed(1).replace(".", ","); }
+function openFinal(){ show("screen-final"); renderFinalIntro(); }
+function renderFinalIntro(){
+  $("#final").innerHTML = `<div class="c-fin">
+    <div class="mhead"><span class="micon">📝</span><div><div class="small muted">Simulacro</div><h1>Prueba final</h1></div></div>
+    <div class="card">
+      <h2>¿Cómo funciona?</h2>
+      <ul class="feat">
+        <li>📋 <b>20 preguntas</b> de todos los temas, como en una prueba del colegio.</li>
+        <li>🤫 No verás si está bien o mal hasta el final (¡como en la prueba de verdad!).</li>
+        <li>📊 Al final: tu <b>nota del 1,0 al 7,0</b> (con 12 buenas sacas un 4,0), tus errores explicados y qué misión repasar.</li>
+        <li>⏱️ Cronómetro opcional: lo puedes apagar cuando quieras.</li>
+        <li>🔀 Cada vez salen preguntas distintas y en otro orden (hay ${FINAL_BANK.length} en el banco).</li>
+      </ul>
+      <p>🏆 Con nota <b>6,0 o más</b> ganas la medalla <b>${MEDALS.final.name}</b>.</p>
+      <div class="row center"><button class="btn" onclick="startFinal()">¡Comenzar prueba! 📝</button></div>
+    </div></div>`;
+}
+function startFinal(){
+  // 5 preguntas de cada misión (m1, m2, m3, m4) mezcladas
+  let qs = [];
+  ["m1","m2","m3","m4"].forEach(t=>{ qs = qs.concat(shuffle(FINAL_BANK.filter(q=>q.tag===t)).slice(0,5)); });
+  qs = shuffle(qs);
+  const answers = [];
+  let i = 0;
+  timerSec = 0;
+  const step = ()=>{
+    if(i >= qs.length){ stopTimer(); return endFinal(qs, answers); }
+    $("#final").innerHTML = `<div class="c-fin">
+      <div class="qhead"><span>📝 Pregunta ${i+1} de ${qs.length}</span>
+      <span class="row"><span class="timer" id="timer"></span><button class="linkbtn" id="timerBtn" onclick="toggleTimer()">${S.timerOn ? "⏸️ Apagar cronómetro" : "▶️ Encender cronómetro"}</button></span></div>
+      <div class="progress thin"><div style="width:${Math.round(i/qs.length*100)}%"></div></div>
+      <div id="qbox"></div>
+      <div class="center"><button class="linkbtn" onclick="if(confirm('¿Salir de la prueba? Perderás las respuestas.')) goHome()">Salir de la prueba</button></div></div>`;
+    drawTimer();
+    renderQuestion(qs[i], $("#qbox"), "exam", {
+      onAnswer(ok, first, given){ answers.push({q:qs[i], ok, given}); },
+      onNext(){ i++; step(); window.scrollTo(0,0); }
+    });
+  };
+  step();
+  if(S.timerOn) startTimer();
+}
+function endFinal(qs, answers){
+  const correct = answers.filter(a=>a.ok).length;
+  const grade = calcGrade(correct, qs.length);
+  S.lastGrade = grade;
+  if(S.bestGrade == null || grade > S.bestGrade) S.bestGrade = grade;
+  save();
+  markDone("final");
+  addPoints(correct * 5);
+  const mm = Math.floor(timerSec/60), ss = timerSec % 60;
+  const wrongs = answers.filter(a=>!a.ok);
+  const names = {m1:"Misión 1: Reportaje", m2:"Misión 2: Artículo informativo", m3:"Misión 3: Manual de instrucciones", m4:"Misión 4: ¿Qué texto es?"};
+  const cnt = {}; wrongs.forEach(a=>{ cnt[a.q.tag] = (cnt[a.q.tag]||0) + 1; });
+  const ranked = Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]);
+  let rec;
+  if(!ranked.length) rec = "<p class='big'>🌟 ¡No tuviste errores! Estás listo. Solo repasa la Hoja resumen el martes.</p>";
+  else {
+    const go = {m1:"openMission('m1','learn')", m2:"openMission('m2','learn')", m3:"openMission('m3','learn')", m4:"openCompare()"};
+    rec = "<p>Te conviene repasar:</p><div class='row'>" + ranked.map(t=>'<button class="btn secondary" onclick="' + go[t] + '">' + names[t] + ' (' + cnt[t] + ' error' + (cnt[t]>1 ? "es" : "") + ')</button>').join("") + "</div>";
+  }
+  const msg = grade >= 6 ? "¡Excelente! 🌟 Estás muy bien preparado." : grade >= 5 ? "¡Muy bien! 👍 Repasa tus errores y estarás listo." : grade >= 4 ? "¡Aprobado! 💪 Con un poco más de repaso subirás tu nota." : "¡No te desanimes! 🌱 Repasa las misiones sugeridas y vuelve a intentarlo.";
+  const revs = wrongs.map(a=>{
+    const n = qs.indexOf(a.q) + 1;
+    return '<div class="rev"><div class="revq">Pregunta ' + n + ': ' + strip(a.q.q) + '</div>'
+      + '<div>❌ <b>Tu respuesta:</b> ' + a.given + '</div>'
+      + '<div>✅ <b>Respuesta correcta:</b><br>' + correctText(a.q) + '</div>'
+      + '<div class="fix">💬 ' + a.q.exp + '</div>'
+      + '<div class="small muted">📌 Tema: ' + names[a.q.tag] + '</div></div>';
+  }).join("");
+  $("#final").innerHTML = `<div class="c-fin">
+    <div class="card center">
+      <h2>📊 Resultado de tu prueba</h2>
+      <div class="grade ${grade >= 4 ? "pass" : "fail"}">${fmtGrade(grade)}</div>
+      <p class="big">Respuestas correctas: <b>${correct} de ${qs.length}</b></p>
+      <p>${msg}</p>
+      <p class="small muted">⏱️ Tiempo: ${mm} min ${ss} s ${S.timerOn ? "" : "(cronómetro apagado en algún momento)"} · +${correct*5} ⭐ · Mejor nota: ${fmtGrade(S.bestGrade)}</p>
+      <div class="row center"><button class="btn" onclick="startFinal()">🔁 Repetir prueba (otras preguntas)</button><button class="btn secondary" onclick="goHome()">🗺️ Volver al mapa</button></div>
+    </div>
+    <div class="card"><h2>🎯 ¿Qué repasar?</h2>${rec}</div>
+    ${wrongs.length ? '<div class="card"><h2>❌ Preguntas que tuviste malas (' + wrongs.length + ')</h2>' + revs + '</div>' : ""}
+  </div>`;
+  if(grade >= 6) giveMedal("final");
+}
+
+/* =========================================================
+   HOJA RESUMEN
+   ========================================================= */
+function openSummary(){
+  show("screen-summary");
+  if(!S.done.resumen){ S.done.resumen = true; save(); }
+  $("#summary").innerHTML = `
+  <div class="row center no-print" style="margin-bottom:14px"><button class="btn" onclick="window.print()">🖨️ Imprimir hoja resumen</button><button class="btn secondary" onclick="goHome()">🗺️ Volver al mapa</button></div>
+  <div class="sheet">
+    <div class="sheet-head"><h1>📋 Hoja resumen: 3 tipos de texto</h1><p class="small">Lenguaje · 6.º básico · ¡Léela con calma antes de la prueba! 🍀</p></div>
+
+    <div class="sum-box c-rep"><h2>📰 Reportaje</h2><div class="sum-grid">
+      <div><h4>🎯 Propósito</h4><p>Texto <b>periodístico</b> que <b>investiga y profundiza</b> un tema real de interés. Más largo y detallado que una noticia.</p></div>
+      <div><h4>🧩 Partes</h4><ol><li>Título</li><li>Bajada (epígrafe)</li><li>Lead o entrada</li><li>Cuerpo: subtítulos, citas y datos</li><li>Cierre o conclusión</li></ol></div>
+      <div><h4>✨ Características</h4><ul><li>Entrevistas y testimonios</li><li>Citas textuales entre “comillas”</li><li>Datos y fotos con pie de foto</li><li>Puede mostrar el estilo del periodista (“viajamos”)</li><li>Está en diarios, revistas y TV</li></ul></div>
+      <div class="sum-trick"><h4>🧠 Truco</h4><p>🚲 <b>T</b>u <b>B</b>ici <b>L</b>leva <b>C</b>adena y <b>C</b>asco</p><p>🕵️ El reportero investiga como detective.</p></div>
+    </div></div>
+
+    <div class="sum-box c-art"><h2>🔬 Artículo informativo</h2><div class="sum-grid">
+      <div><h4>🎯 Propósito</h4><p><b>Informar o explicar</b> un tema de forma <b>clara y objetiva</b>.</p></div>
+      <div><h4>🧩 Partes</h4><ol><li>Título</li><li>Introducción</li><li>Desarrollo (con subtítulos)</li><li>Conclusión o cierre</li></ol></div>
+      <div><h4>✨ Características</h4><ul><li>Lenguaje formal, preciso y objetivo</li><li>3.ª persona, verbos en presente</li><li>SIN opiniones</li><li>Imágenes, esquemas, infografías, tablas, glosario y fuentes</li><li>Está en enciclopedias y textos escolares</li></ul></div>
+      <div class="sum-trick"><h4>🧠 Truco</h4><p>🧪 <b>T</b>engo <b>I</b>deas <b>D</b>e <b>C</b>ientífico</p><p>🔬 Explica, pero NO opina.</p></div>
+    </div></div>
+
+    <div class="sum-box c-man"><h2>🛠️ Manual de instrucciones (texto instructivo)</h2><div class="sum-grid">
+      <div><h4>🎯 Propósito</h4><p><b>Enseñar a hacer o usar algo paso a paso.</b></p></div>
+      <div><h4>🧩 Partes</h4><ol><li>Título u objetivo</li><li>Materiales o componentes</li><li>Pasos numerados y en orden</li><li>Imágenes de apoyo</li><li>Advertencias ⚠️</li></ol></div>
+      <div><h4>✨ Características</h4><ul><li>Lenguaje claro, preciso y breve</li><li>Verbos en imperativo (corta) o infinitivo (cortar)</li><li>Conectores de orden: primero, luego, después, finalmente</li><li>Está en recetas, juguetes y aparatos</li></ul></div>
+      <div class="sum-trick"><h4>🧠 Truco</h4><p>¿QUÉ? ¿CON QUÉ? ¿CÓMO? ¡CUIDADO!</p><p>🎵 Primero, luego y al final: ¡así se sigue un manual!</p></div>
+    </div></div>
+
+    <div class="sum-box c-cmp"><h2>🤔 ¿Cómo los distingo?</h2>
+      <ul class="small" style="margin:0;padding-left:1.2em">
+        <li>¿Hay <b>entrevistas, citas entre comillas</b> y escenas contadas por un periodista? → <b>Reportaje</b> 📰</li>
+        <li>¿<b>Explica</b> un tema de forma objetiva, como una enciclopedia, sin opinar? → <b>Artículo informativo</b> 🔬</li>
+        <li>¿Tiene <b>materiales, pasos numerados</b> y verbos como “corta” o “mezcla”? → <b>Manual de instrucciones</b> 🛠️</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+updateTop();
+renderHome();
+</script>
+</body>
+</html>
